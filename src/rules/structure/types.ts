@@ -1,7 +1,7 @@
 export type PathType = "file" | "directory";
 
 /**
- * Represents the input structure for a rule that checks the existence 
+ * Represents the input structure for a rule that checks the existence
  * and type of a file system path.
  */
 export interface StructureInput {
@@ -13,7 +13,7 @@ export interface StructureInput {
 
 /**
  * Represents the observed input structure for a rule that checks the existence
- * and type of a file system path, including additional information about 
+ * and type of a file system path, including additional information about
  * whether the path exists and its actual type.
  */
 export interface StructureObservedInput extends StructureInput {

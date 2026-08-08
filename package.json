@@ -1,18 +1,24 @@
 {
   "name": "shapit",
   "version": "0.0.1",
+  "bin": {
+    "shapit": "./bin/shapit.js"
+  },
   "type": "module",
   "scripts": {
-    "dev": "tsx src/index.ts",
+    "dev": "tsx src/cli/index.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "audit": "yarn npm audit --recursive --severity high",
     "format": "oxfmt",
-    "format:check": "oxfmt --check"
+    "format:check": "oxfmt --check",
+    "audit": "yarn npm audit --recursive --severity high",
+    "check": "yarn typecheck && yarn lint && yarn format:check"
   },
   "dependencies": {
+    "chalk": "6.0.0",
+    "commander": "15.0.0",
     "yaml": "2.9.0",
     "zod": "4.4.3"
   },

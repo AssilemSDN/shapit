@@ -4,10 +4,10 @@ import type { RuleResult } from "../../core/types.js";
 import type { StructureObservedInput } from "./types.js";
 
 /**
- * Audits the provided StructureObservedInput to determine if it meets 
+ * Audits the provided StructureObservedInput to determine if it meets
  * the specified requirements.
  *
- * @param input - The StructureObservedInput containing observed information about 
+ * @param input - The StructureObservedInput containing observed information about
  * the file system.
  * @returns A RuleResult indicating whether the input is valid and any associated message.
  */
@@ -41,7 +41,7 @@ export const auditStructure = (input: StructureObservedInput): RuleResult => {
     };
   }
 
-  return { 
-    valid: true 
+  return {
+    valid: true,
   };
 };
