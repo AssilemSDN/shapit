@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 
 import { loadConfig } from "../config/load-config.js";
 import { audit } from "../core/audit.js";
+import { ExitCodes } from "../utils/exit-codes.js";
 import { logger } from "../utils/logger.js";
 import { safeRun } from "../utils/safe-run.js";
 
@@ -32,9 +33,16 @@ export const auditProject = safeRun(async ({ projectDir, configFile }: AuditProj
 
   const failed = results.filter((result) => !result.valid);
 
+  const success = failed.length === 0;
+
   return {
-    total: results.length,
-    passed: results.length - failed.length,
-    failed: failed.length,
+    success,
+    exitCode: success ? ExitCodes.SUCCESS.code : ExitCodes.AUDIT_FAILED.code,
+    warnings: [],
+    data: {
+      total: results.length,
+      passed: results.length - failed.length,
+      failed: failed.length,
+    },
   };
 });

@@ -6,6 +6,7 @@ import { logger } from "./logger.js";
 
 export interface CommandResult<TData = unknown> {
   success: boolean;
+  exitCode: number;
   warnings: string[];
   data?: TData;
   error?: unknown;
@@ -16,48 +17,12 @@ type AppErrorLike = Error & {
   details?: unknown;
 };
 
-/**
- * Wraps an async function and ensures a consistent command result.
- */
-export function safeRun<TArgs extends unknown[], TResult>(
-  fn: (...args: TArgs) => Promise<TResult>,
+export function safeRun<TArgs extends unknown[], TData>(
+  fn: (...args: TArgs) => Promise<CommandResult<TData>>,
 ) {
-  return async (...args: TArgs): Promise<CommandResult> => {
+  return async (...args: TArgs): Promise<CommandResult<TData>> => {
     try {
-      const result = await fn(...args);
-
-      if (result !== null && typeof result === "object" && !Array.isArray(result)) {
-        const {
-          warning,
-          warnings = [],
-          ...data
-        } = result as Record<string, unknown> & {
-          warning?: unknown;
-          warnings?: unknown;
-        };
-
-        const normalizedWarnings = [
-          ...(typeof warning === "string" ? [warning] : []),
-
-          ...(Array.isArray(warnings)
-            ? warnings.filter((warning): warning is string => typeof warning === "string")
-            : typeof warnings === "string"
-              ? [warnings]
-              : []),
-        ];
-
-        return {
-          success: true,
-          warnings: normalizedWarnings,
-          data,
-        };
-      }
-
-      return {
-        success: true,
-        warnings: [],
-        data: result,
-      };
+      return await fn(...args);
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "AppError") {
         const appError = err as AppErrorLike;
@@ -68,19 +33,22 @@ export function safeRun<TArgs extends unknown[], TResult>(
           logger.debug("Details:", appError.details);
         }
 
-        process.exitCode = ExitCodes.USER_ERROR.code;
-      } else {
-        const message = err instanceof Error ? err.message : err;
-
-        logger.error("An internal error happened", message);
-
-        logger.debug(err);
-
-        process.exitCode = ExitCodes.INTERNAL_ERROR.code;
+        return {
+          success: false,
+          exitCode: ExitCodes.USER_ERROR.code,
+          warnings: [],
+          error: err,
+        };
       }
+
+      const message = err instanceof Error ? err.message : err;
+
+      logger.error("An internal error happened", message);
+      logger.debug(err);
 
       return {
         success: false,
+        exitCode: ExitCodes.INTERNAL_ERROR.code,
         warnings: [],
         error: err,
       };

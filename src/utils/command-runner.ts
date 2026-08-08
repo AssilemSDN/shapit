@@ -3,6 +3,7 @@
 */
 import { logger } from "./logger.js";
 import type { CommandResult } from "./safe-run.js";
+import { ExitCodes } from "./exit-codes.js";
 
 type CommandFunction<TOptions, TData = unknown> = (
   options: TOptions,
@@ -13,20 +14,25 @@ export async function runCommand<TOptions, TData = unknown>(
   commandFn: CommandFunction<TOptions, TData>,
   options: TOptions,
 ): Promise<void> {
-  // Log the start of the command execution
   logger.info(`🚀 Starting ${commandName}...`);
 
   try {
     const result = await commandFn(options);
 
-    if (!result.success) {
-      logger.error(`❌ ${commandName} failed.`);
-      process.exitCode ||= 1;
-      return;
-    }
+    process.exitCode = result.exitCode;
 
     for (const warning of result.warnings) {
       logger.warn(warning);
+    }
+
+    if (!result.success) {
+      if (result.exitCode === ExitCodes.AUDIT_FAILED.code) {
+        logger.error(`❌ ${commandName} found violations.`);
+      } else {
+        logger.error(`❌ ${commandName} failed.`);
+      }
+
+      return;
     }
 
     if (result.warnings.length > 0) {
@@ -41,6 +47,6 @@ export async function runCommand<TOptions, TData = unknown>(
   } catch (err: unknown) {
     logger.error(`❌ Unexpected error during ${commandName}:`, err);
 
-    process.exitCode ||= 1;
+    process.exitCode = ExitCodes.INTERNAL_ERROR.code;
   }
 }
