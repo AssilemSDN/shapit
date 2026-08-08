@@ -1,0 +1,7 @@
+rules:
+  - id: package-json
+    type: structure
+    parameters:
+      path: package.json
+      path_type: file
+      required: true

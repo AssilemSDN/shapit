@@ -32,7 +32,7 @@ rules:
       path: "src/services/{{service.serviceDirectoryName}}/{{service.serviceFileName}}"
       path_type: file
       file_extension: [".ts", ".js"]
-      required: true 
+      required: true
   # models files
   - id: models-files
     each:
