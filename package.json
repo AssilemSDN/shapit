@@ -1,15 +1,16 @@
 {
   "name": "shapit",
+  "version": "0.0.1",
+  "type": "module",
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
     "audit": "yarn npm audit --recursive --severity high",
-    "check": "yarn typecheck && yarn lint && yarn format:check"
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
   "dependencies": {
     "yaml": "2.9.0",
@@ -17,8 +18,8 @@
   },
   "devDependencies": {
     "@types/node": "26.1.2",
+    "oxfmt": "0.62.0",
     "oxlint": "1.77.0",
-    "prettier": "3.9.6",
     "tsx": "4.23.9",
     "typescript": "7.0.2"
   },
