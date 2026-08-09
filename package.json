@@ -5,9 +5,15 @@
     "shapit": "./bin/shapit.js"
   },
   "type": "module",
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
   "scripts": {
     "dev": "tsx src/cli/index.ts",
     "build": "tsc",
+    "prepack": "yarn build",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
