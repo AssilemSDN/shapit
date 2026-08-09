@@ -1,4 +1,5 @@
 import type { ShapitConfig } from "../config/types.js";
+import { AppError } from "../errors/AppError.js";
 import { ruleRegistry } from "../rules/registry.js";
 import type { AuditResult, ProjectContext } from "./types.js";
 
@@ -21,7 +22,13 @@ export const audit = async (
     const executor = ruleRegistry[definition.type];
 
     if (!executor) {
-      throw new Error(`Unknown rule type "${definition.type}"`);
+      throw new AppError(`Unknown rule type "${definition.type}"`, {
+        code: "UNKNOWN_RULE_TYPE",
+        details: {
+          ruleId: definition.id,
+          ruleType: definition.type,
+        },
+      });
     }
 
     const result = await executor.execute(definition.parameters, context);

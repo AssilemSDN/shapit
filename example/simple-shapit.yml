@@ -1,3 +1,5 @@
+# shapit.yml
+
 rules:
   - id: package-json
     type: structure

@@ -3,6 +3,7 @@
 */
 import { ExitCodes } from "./exit-codes.js";
 import { logger } from "./logger.js";
+import { AppError } from "../errors/AppError.js";
 
 export interface CommandResult<TData = unknown> {
   success: boolean;
@@ -12,10 +13,6 @@ export interface CommandResult<TData = unknown> {
   error?: unknown;
 }
 
-type AppErrorLike = Error & {
-  name: "AppError";
-  details?: unknown;
-};
 
 export function safeRun<TArgs extends unknown[], TData>(
   fn: (...args: TArgs) => Promise<CommandResult<TData>>,
@@ -24,13 +21,11 @@ export function safeRun<TArgs extends unknown[], TData>(
     try {
       return await fn(...args);
     } catch (err: unknown) {
-      if (err instanceof Error && err.name === "AppError") {
-        const appError = err as AppErrorLike;
+      if (err instanceof AppError) {
+        logger.error(err.message);
 
-        logger.error(appError.message);
-
-        if (appError.details !== undefined) {
-          logger.debug("Details:", appError.details);
+        if (err.details !== null) {
+          logger.debug("Details:", err.details);
         }
 
         return {

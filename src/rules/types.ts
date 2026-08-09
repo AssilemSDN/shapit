@@ -3,6 +3,8 @@ import type { ZodType } from "zod";
 import type { Enricher } from "../enrichers/types.js";
 import type { ProjectContext, RuleResult } from "../core/types.js";
 
+import { AppError } from "../errors/AppError.js";
+
 /**
  * Represents a rule that can be executed within the Shapit framework.
  * @template TInput - The type of the input data for the rule.
@@ -35,8 +37,16 @@ export const createRuleExecutor = <TInput, TObservedInput>(
 ): RuleExecutor => {
   return {
     async execute(parameters, context) {
-      const input = rule.schema.parse(parameters);
-      const observedInput = await rule.enricher(input, context);
+      const parsed = rule.schema.safeParse(parameters);
+
+      if (!parsed.success) {
+        throw new AppError("Invalid rule parameters", {
+          code: "INVALID_RULE_PARAMETERS",
+          details: parsed.error.issues,
+        });
+      }
+
+      const observedInput = await rule.enricher(parsed.data, context);
 
       return rule.audit(observedInput);
     },

@@ -30,11 +30,3 @@ export function applyGlobalOptions(program: Command): void {
 
   logger.debug("Logger level:", logger.level);
 }
-
-export const applyLoggerLevel = (program: Command) => {
-  const opts = program.opts();
-
-  logger.level = opts.debug ? "debug" : opts.quiet ? "error" : "info";
-
-  logger.debug("🔧 Logger level set to:", logger.level);
-};
