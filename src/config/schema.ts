@@ -20,4 +20,5 @@ export const shapitConfigSchema = z.object({
       parameters: z.unknown(),
     }),
   ),
-});
+  // refuse unknown properties in the configuration object
+}).strict();

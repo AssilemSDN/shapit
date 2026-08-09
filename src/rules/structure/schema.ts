@@ -14,6 +14,7 @@ export const structureInputSchema = z
     file_extension: z.array(z.string()).optional(),
     required: z.boolean().default(true),
   })
+  .strict() // Refuse unknown properties
   // Transforms the validated input into a StructureInput object
   .transform((value): StructureInput => ({
     path: value.path,
@@ -21,3 +22,4 @@ export const structureInputSchema = z
     fileExtension: value.file_extension,
     required: value.required,
   }));
+  
