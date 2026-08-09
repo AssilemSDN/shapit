@@ -24,11 +24,11 @@ export const auditProject = safeRun(async ({ projectDir, configFile }: AuditProj
 
   for (const result of results) {
     if (result.valid) {
-      logger.info(`✓ ${result.id}`);
+      logger.info(`✅ ${result.id} : Rule passed`);
       continue;
     }
 
-    logger.error(`✗ ${result.id}: ${result.message ?? "Rule failed"}`);
+    logger.error(`❌ ${result.id}: ${result.message ?? result.description ??"Rule failed"}`);
   }
 
   const failed = results.filter((result) => !result.valid);

@@ -1,9 +1,16 @@
 # shapit.yml
 
 rules:
-  - id: package-json
+  - id: package.json
     type: structure
+    description: "package.json file must exist in the project root"
     parameters:
       path: package.json
+      path_type: file
+      required: true
+  - id: yarn.lock
+    type: structure
+    parameters:
+      path: yarn.lock
       path_type: file
       required: true

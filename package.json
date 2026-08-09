@@ -16,7 +16,7 @@
     "lint": "standard",
     "lint:fix": "standard --fix",
     "audit": "yarn npm audit --recursive --severity high",
-    "check": "yarn typecheck && yarn lint && yarn format:check"
+    "check": "yarn typecheck && yarn lint && yarn audit"
   },
   "dependencies": {
     "chalk": "6.0.0",

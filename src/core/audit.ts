@@ -36,6 +36,7 @@ export const audit = async (
     results.push({
       id: definition.id,
       type: definition.type,
+      description: definition.description,
       ...result,
     });
   }

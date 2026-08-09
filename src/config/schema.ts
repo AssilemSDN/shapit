@@ -16,6 +16,7 @@ export const shapitConfigSchema = z.object({
       id: z.string().min(1),
       // The 'type' property is a non-empty string
       type: z.string().min(1),
+      description: z.string().min(1).optional(),
       // The 'parameters' property can be any value (unknown)
       parameters: z.unknown(),
     }),
