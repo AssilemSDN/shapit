@@ -2,8 +2,8 @@
   PATH /src/errors/AppError.js
 */
 export interface AppErrorOptions {
-  code?: string;
-  details?: unknown;
+  code?: string
+  details?: unknown
 }
 
 /**
@@ -16,13 +16,10 @@ export interface AppErrorOptions {
  * @param {any} [options.details=null] - Additional details for debugging
  */
 export class AppError extends Error {
-  readonly code: string;
-  readonly details: any;
+  readonly code: string
+  readonly details: any
 
-  constructor (message: string, { 
-      code = 'APP_ERROR', 
-      details = null 
-    } : AppErrorOptions = {}) {
+  constructor(message: string, { code = 'APP_ERROR', details = null }: AppErrorOptions = {}) {
     super(message)
 
     this.name = 'AppError'

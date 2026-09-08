@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod'
 
-import type { StructureInput } from "./types.js";
+import type { StructureInput } from './types.js'
 
 /**
  * Validates the parameters of a structure rule and transforms
@@ -10,7 +10,7 @@ export const structureInputSchema = z
   // A rule is an object
   .object({
     path: z.string().min(1),
-    path_type: z.enum(["file", "directory"]),
+    path_type: z.enum(['file', 'directory']),
     file_extension: z.array(z.string()).optional(),
     required: z.boolean().default(true),
   })
@@ -21,5 +21,4 @@ export const structureInputSchema = z
     pathType: value.path_type,
     fileExtension: value.file_extension,
     required: value.required,
-  }));
-  
+  }))

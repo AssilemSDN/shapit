@@ -3,7 +3,7 @@
  * where the audit is being performed.
  */
 export interface ProjectContext {
-  cwd: string;
+  cwd: string
 }
 
 /**
@@ -11,8 +11,8 @@ export interface ProjectContext {
  * passed or failed, along with an optional message providing additional context.
  */
 export interface RuleResult {
-  valid: boolean;
-  message?: string;
+  valid: boolean
+  message?: string
 }
 
 /**
@@ -20,7 +20,7 @@ export interface RuleResult {
  * identifying information.
  */
 export interface AuditResult extends RuleResult {
-  id: string;
-  type: string;
-  description?: string;
+  id: string
+  type: string
+  description?: string
 }

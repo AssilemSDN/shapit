@@ -1,25 +1,25 @@
-import type { Stats } from "node:fs";
-import { stat } from "node:fs/promises";
-import { resolve } from "node:path";
+import type { Stats } from 'node:fs'
+import { stat } from 'node:fs/promises'
+import { resolve } from 'node:path'
 
-import type { PathType, StructureInput, StructureObservedInput } from "../rules/structure/types.js";
-import type { Enricher } from "./types.js";
+import type { PathType, StructureInput, StructureObservedInput } from '../rules/structure/types.js'
+import type { Enricher } from './types.js'
 
-const getPathType = (stats: Stats): PathType | "other" => {
+const getPathType = (stats: Stats): PathType | 'other' => {
   if (stats.isFile()) {
-    return "file";
+    return 'file'
   }
 
   if (stats.isDirectory()) {
-    return "directory";
+    return 'directory'
   }
 
-  return "other";
-};
+  return 'other'
+}
 
 const isNodeError = (error: unknown): error is NodeJS.ErrnoException => {
-  return error instanceof Error && "code" in error;
-};
+  return error instanceof Error && 'code' in error
+}
 
 /**
  * Enriches the provided StructureInput with observed information about the file system.
@@ -32,24 +32,24 @@ export const enrichStructureInput: Enricher<StructureInput, StructureObservedInp
   input,
   context,
 ) => {
-  const absolutePath = resolve(context.cwd, input.path);
+  const absolutePath = resolve(context.cwd, input.path)
 
   try {
-    const stats = await stat(absolutePath);
+    const stats = await stat(absolutePath)
 
     return {
       ...input,
       exists: true,
       actualType: getPathType(stats),
-    };
+    }
   } catch (error) {
-    if (isNodeError(error) && error.code === "ENOENT") {
+    if (isNodeError(error) && error.code === 'ENOENT') {
       return {
         ...input,
         exists: false,
-      };
+      }
     }
 
-    throw error;
+    throw error
   }
-};
+}

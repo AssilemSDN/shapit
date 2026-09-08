@@ -1,8 +1,8 @@
-import { enrichStructureInput } from "../../enrichers/structure-enricher.js";
-import { createRuleExecutor } from "../types.js";
+import { enrichStructureInput } from '../../enrichers/structure-enricher.js'
+import { createRuleExecutor } from '../types.js'
 
-import { auditStructure } from "./audit.js";
-import { structureInputSchema } from "./schema.js";
+import { auditStructure } from './audit.js'
+import { structureInputSchema } from './schema.js'
 
 /**
  * Extends the base RuleExecutor to create a specific executor for
@@ -13,4 +13,4 @@ export const structureRule = createRuleExecutor({
   schema: structureInputSchema,
   enricher: enrichStructureInput,
   audit: auditStructure,
-});
+})

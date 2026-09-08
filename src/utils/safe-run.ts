@@ -1,16 +1,15 @@
 /*
   PATH /src/utils/safe-run.ts
 */
-import { ExitCodes } from "./exit-codes.js";
-import { logger } from "./logger.js";
-import { AppError } from "../errors/AppError.js";
+import { ExitCodes } from './exit-codes.js'
+import { AppError } from '../errors/AppError.js'
 
 export interface CommandResult<TData = unknown> {
-  success: boolean;
-  exitCode: number;
-  warnings: string[];
-  data?: TData;
-  error?: unknown;
+  success: boolean
+  exitCode: number
+  warnings: string[]
+  data?: TData
+  error?: unknown
 }
 
 export function safeRun<TArgs extends unknown[], TData>(
@@ -18,7 +17,7 @@ export function safeRun<TArgs extends unknown[], TData>(
 ) {
   return async (...args: TArgs): Promise<CommandResult<TData>> => {
     try {
-      return await fn(...args);
+      return await fn(...args)
     } catch (err: unknown) {
       if (err instanceof AppError) {
         return {
