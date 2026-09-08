@@ -11,38 +11,31 @@ export interface AuditProjectOptions {
   configFile: string;
 }
 
-export const auditProject = safeRun(async ({ projectDir, configFile }: AuditProjectOptions) => {
-  const cwd = resolve(projectDir);
-  const configPath = resolve(cwd, configFile);
+export const auditProject = safeRun(
+  async ({ projectDir, configFile }: AuditProjectOptions) => {
+    const cwd = resolve(projectDir);
+    const configPath = resolve(cwd, configFile);
 
-  logger.debug("Project directory:", cwd);
-  logger.debug("Configuration file:", configPath);
+    logger.debug("Project directory:", cwd);
+    logger.debug("Configuration file:", configPath);
 
-  const config = await loadConfig(configPath);
+    const config = await loadConfig(configPath);
+    const results = await audit(config, { cwd });
+    const failed = results.filter((result) => !result.valid);
+    const success = failed.length === 0;
 
-  const results = await audit(config, { cwd });
-
-  for (const result of results) {
-    if (result.valid) {
-      logger.info(`✅ ${result.id} : Rule passed`);
-      continue;
-    }
-
-    logger.error(`❌ ${result.id}: ${result.message ?? result.description ??"Rule failed"}`);
-  }
-
-  const failed = results.filter((result) => !result.valid);
-
-  const success = failed.length === 0;
-
-  return {
-    success,
-    exitCode: success ? ExitCodes.SUCCESS.code : ExitCodes.AUDIT_FAILED.code,
-    warnings: [],
-    data: {
-      total: results.length,
-      passed: results.length - failed.length,
-      failed: failed.length,
-    },
-  };
-});
+    return {
+      success,
+      exitCode: success
+        ? ExitCodes.SUCCESS.code
+        : ExitCodes.AUDIT_FAILED.code,
+      warnings: [],
+      data: {
+        total: results.length,
+        passed: results.length - failed.length,
+        failed: failed.length,
+        results,
+      },
+    };
+  },
+);

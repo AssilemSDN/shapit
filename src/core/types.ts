@@ -22,4 +22,5 @@ export interface RuleResult {
 export interface AuditResult extends RuleResult {
   id: string;
   type: string;
+  description?: string;
 }
