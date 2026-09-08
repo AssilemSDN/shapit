@@ -13,8 +13,8 @@
     "build": "tsc",
     "prepack": "yarn build",
     "typecheck": "tsc --noEmit",
-    "lint": "standard",
-    "lint:fix": "standard --fix",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
     "audit": "yarn npm audit --recursive --severity high",
     "check": "yarn typecheck && yarn lint && yarn audit"
   },
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/node": "26.1.2",
-    "standard": "17.1.2",
+    "oxlint": "1.82.0",
     "tsx": "4.23.9",
     "typescript": "7.0.2"
   },

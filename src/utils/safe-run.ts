@@ -13,7 +13,6 @@ export interface CommandResult<TData = unknown> {
   error?: unknown;
 }
 
-
 export function safeRun<TArgs extends unknown[], TData>(
   fn: (...args: TArgs) => Promise<CommandResult<TData>>,
 ) {
@@ -22,31 +21,19 @@ export function safeRun<TArgs extends unknown[], TData>(
       return await fn(...args);
     } catch (err: unknown) {
       if (err instanceof AppError) {
-        logger.error(err.message);
-
-        if (err.details !== null) {
-          logger.debug("Details:", err.details);
-        }
-
         return {
           success: false,
           exitCode: ExitCodes.USER_ERROR.code,
           warnings: [],
           error: err,
-        };
+        }
       }
-
-      const message = err instanceof Error ? err.message : err;
-
-      logger.error("An internal error happened", message);
-      logger.debug(err);
-
       return {
         success: false,
         exitCode: ExitCodes.INTERNAL_ERROR.code,
         warnings: [],
         error: err,
-      };
+      }
     }
-  };
+  }
 }
