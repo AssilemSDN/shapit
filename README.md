@@ -10,7 +10,7 @@ Define project constraints in a YAML configuration file, run an audit, and let S
 rules:
   - id: package-json
     type: structure
-    description: "package.json must exist in the project root"
+    description: 'package.json must exist in the project root'
     parameters:
       path: package.json
       path_type: file
@@ -18,7 +18,7 @@ rules:
 
   - id: source-directory
     type: structure
-    description: "src must be a directory"
+    description: 'src must be a directory'
     parameters:
       path: src
       path_type: directory
@@ -35,16 +35,16 @@ Shapit is designed to be simple to use locally and predictable enough to integra
 
 ## Features
 
-* Declarative project validation using `shapit.yml`
-* Validate required files and directories
-* Validate expected path types
-* Validate allowed file extensions
-* Optional and required paths
-* Human-readable rule descriptions
-* Strict configuration validation
-* CI-friendly exit codes
-* Debug and quiet logging modes
-* Lightweight and extensible rule architecture
+- Declarative project validation using `shapit.yml`
+- Validate required files and directories
+- Validate expected path types
+- Validate allowed file extensions
+- Optional and required paths
+- Human-readable rule descriptions
+- Strict configuration validation
+- CI-friendly exit codes
+- Debug and quiet logging modes
+- Lightweight and extensible rule architecture
 
 > ⚠️ **Work In Progress (WIP)**
 > Shapit is currently in early development. The configuration format and internal APIs may change between releases.
@@ -221,8 +221,8 @@ yarn shapit audit [project-dir]
 
 By default:
 
-* the project directory is the current directory;
-* the configuration file is `shapit.yml`.
+- the project directory is the current directory;
+- the configuration file is `shapit.yml`.
 
 #### Arguments
 
@@ -250,7 +250,7 @@ Create a `shapit.yml` file at the root of the project:
 rules:
   - id: package-json
     type: structure
-    description: "package.json must exist in the project root"
+    description: 'package.json must exist in the project root'
     parameters:
       path: package.json
       path_type: file
@@ -258,7 +258,7 @@ rules:
 
   - id: source-directory
     type: structure
-    description: "src must exist and must be a directory"
+    description: 'src must exist and must be a directory'
     parameters:
       path: src
       path_type: directory
@@ -283,7 +283,7 @@ Example:
 ```yaml
 - id: package-json
   type: structure
-  description: "package.json must exist in the project root"
+  description: 'package.json must exist in the project root'
   parameters:
     path: package.json
     path_type: file
@@ -297,10 +297,10 @@ The `structure` rule validates the expected filesystem structure of a project.
 
 It can check:
 
-* whether a path exists;
-* whether it is a file or directory;
-* whether a file uses one of the expected extensions;
-* whether the path is required.
+- whether a path exists;
+- whether it is a file or directory;
+- whether a file uses one of the expected extensions;
+- whether the path is required.
 
 ### Parameters
 
@@ -317,7 +317,7 @@ It can check:
 rules:
   - id: package-json
     type: structure
-    description: "package.json must exist"
+    description: 'package.json must exist'
     parameters:
       path: package.json
       path_type: file
@@ -330,7 +330,7 @@ rules:
 rules:
   - id: source-directory
     type: structure
-    description: "src must be a directory"
+    description: 'src must be a directory'
     parameters:
       path: src
       path_type: directory
@@ -343,7 +343,7 @@ rules:
 rules:
   - id: typescript-config
     type: structure
-    description: "TypeScript configuration must be a JSON file"
+    description: 'TypeScript configuration must be a JSON file'
     parameters:
       path: tsconfig.json
       path_type: file
@@ -358,7 +358,7 @@ rules:
 rules:
   - id: environment-file
     type: structure
-    description: ".env may exist, but must be a file when present"
+    description: '.env may exist, but must be a file when present'
     parameters:
       path: .env
       path_type: file
@@ -406,9 +406,11 @@ yarn dev audit
 ```
 
 You can also create a global symlink to the local package:
+
 ```bash
 npm link
 ```
+
 > Yarn 4's yarn link command does not create a global CLI link like Yarn Classic did. Use `npm link` to expose the local shapit executable.
 
 Then run Shapit from anywhere:

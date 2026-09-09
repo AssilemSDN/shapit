@@ -1,9 +1,10 @@
-import type { ZodType } from "zod";
+import type { ZodType } from 'zod'
 
-import type { Enricher } from "../enrichers/types.js";
-import type { ProjectContext, RuleResult } from "../core/types.js";
+import type { Enricher } from '../enrichers/types.js'
+import type { ProjectContext, RuleResult } from '../core/types.js'
 
-import { AppError } from "../errors/AppError.js";
+import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
  * Represents a rule that can be executed within the Shapit framework.
@@ -11,9 +12,9 @@ import { AppError } from "../errors/AppError.js";
  * @template TObservedInput - The type of the observed input data after enrichment.
  */
 export interface Rule<TInput, TObservedInput> {
-  schema: ZodType<TInput>;
-  enricher: Enricher<TInput, TObservedInput>;
-  audit: (input: TObservedInput) => RuleResult | Promise<RuleResult>;
+  schema: ZodType<TInput>
+  enricher: Enricher<TInput, TObservedInput>
+  audit: (input: TObservedInput) => RuleResult | Promise<RuleResult>
 }
 
 /**
@@ -21,7 +22,7 @@ export interface Rule<TInput, TObservedInput> {
  * and auditing the input data.
  */
 export interface RuleExecutor {
-  execute(parameters: unknown, context: ProjectContext): Promise<RuleResult>;
+  execute(parameters: unknown, context: ProjectContext): Promise<RuleResult>
 }
 
 /**
@@ -37,18 +38,18 @@ export const createRuleExecutor = <TInput, TObservedInput>(
 ): RuleExecutor => {
   return {
     async execute(parameters, context) {
-      const parsed = rule.schema.safeParse(parameters);
+      const parsed = rule.schema.safeParse(parameters)
 
       if (!parsed.success) {
-        throw new AppError("Invalid rule parameters", {
-          code: "INVALID_RULE_PARAMETERS",
+        throw new AppError('Invalid rule parameters', {
+          code: ErrorCodes.INVALID_RULE_CONFIG,
           details: parsed.error.issues,
-        });
+        })
       }
 
-      const observedInput = await rule.enricher(parsed.data, context);
+      const observedInput = await rule.enricher(parsed.data, context)
 
-      return rule.audit(observedInput);
+      return rule.audit(observedInput)
     },
-  };
-};
+  }
+}

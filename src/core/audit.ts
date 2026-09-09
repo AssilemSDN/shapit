@@ -1,7 +1,8 @@
-import type { ShapitConfig } from "../config/types.js";
-import { AppError } from "../errors/AppError.js";
-import { ruleRegistry } from "../rules/registry.js";
-import type { AuditResult, ProjectContext } from "./types.js";
+import type { ShapitConfig } from '../config/types.js'
+import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
+import { ruleRegistry } from '../rules/registry.js'
+import type { AuditResult, ProjectContext } from './types.js'
 
 /**
  * Audits the project based on the provided configuration and context.
@@ -15,31 +16,31 @@ export const audit = async (
   context: ProjectContext,
 ): Promise<AuditResult[]> => {
   // Initialize an array to hold the results of the audit
-  const results: AuditResult[] = [];
+  const results: AuditResult[] = []
 
   // Iterate over each rule definition in the configuration
   for (const definition of config.rules) {
-    const executor = ruleRegistry[definition.type];
+    const executor = ruleRegistry[definition.type]
 
     if (!executor) {
       throw new AppError(`Unknown rule type "${definition.type}"`, {
-        code: "UNKNOWN_RULE_TYPE",
+        code: ErrorCodes.UNKNOWN_RULE_TYPE,
         details: {
           ruleId: definition.id,
           ruleType: definition.type,
         },
-      });
+      })
     }
 
-    const result = await executor.execute(definition.parameters, context);
+    const result = await executor.execute(definition.parameters, context)
 
     results.push({
       id: definition.id,
       type: definition.type,
       description: definition.description,
       ...result,
-    });
+    })
   }
 
-  return results;
-};
+  return results
+}

@@ -1,4 +1,4 @@
-import type { ProjectContext } from "../core/types.js";
+import type { ProjectContext } from '../core/types.js'
 
 /**
  * Represents the type for an enricher function that transforms input data into
@@ -11,4 +11,4 @@ import type { ProjectContext } from "../core/types.js";
 export type Enricher<TInput, TObservedInput> = (
   input: TInput,
   context: ProjectContext,
-) => Promise<TObservedInput>;
+) => Promise<TObservedInput>

@@ -5,28 +5,30 @@ export const ExitCodes = {
   // All rules OK
   SUCCESS: {
     code: 0,
-    label: "SUCCESS",
-    desc: "Everything went fine",
+    label: 'SUCCESS',
+    desc: 'Everything went fine',
   },
 
   // At least one rule not OK
   AUDIT_FAILED: {
     code: 1,
-    label: "AUDIT_FAILED",
-    desc: "Audit failed due to rule violations",
+    label: 'AUDIT_FAILED',
+    desc: 'Audit failed due to rule violations',
   },
 
-  // Invalid config
+  // Invalid input or user mistake
   USER_ERROR: {
     code: 2,
-    label: "USER_ERROR",
-    desc: "Invalid input or user mistake",
+    label: 'USER_ERROR',
+    desc: 'Invalid input or user mistake',
   },
 
   // Unexpected internal error
   INTERNAL_ERROR: {
     code: 3,
-    label: "INTERNAL_ERROR",
-    desc: "Unexpected internal error",
+    label: 'INTERNAL_ERROR',
+    desc: 'Internal execution error',
   },
-} as const;
+} as const
+
+export type ExitCode = (typeof ExitCodes)[keyof typeof ExitCodes]['code']
