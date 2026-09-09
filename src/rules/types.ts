@@ -4,6 +4,7 @@ import type { Enricher } from '../enrichers/types.js'
 import type { ProjectContext, RuleResult } from '../core/types.js'
 
 import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
  * Represents a rule that can be executed within the Shapit framework.
@@ -41,7 +42,7 @@ export const createRuleExecutor = <TInput, TObservedInput>(
 
       if (!parsed.success) {
         throw new AppError('Invalid rule parameters', {
-          code: 'INVALID_RULE_PARAMETERS',
+          code: ErrorCodes.INVALID_RULE_CONFIG,
           details: parsed.error.issues,
         })
       }

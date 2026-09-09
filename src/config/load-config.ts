@@ -6,6 +6,7 @@ import { shapitConfigSchema } from './schema.js'
 import type { ShapitConfig } from './types.js'
 
 import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
  * Loads and parses the Shapit configuration file from the specified path.
@@ -21,11 +22,10 @@ export const loadConfig = async (path: string): Promise<ShapitConfig> => {
   } catch (err: unknown) {
     if (err instanceof Error && 'code' in err && err.code === 'ENOENT') {
       throw new AppError(`Configuration file not found: "${path}"`, {
-        code: 'CONFIG_NOT_FOUND',
+        code: ErrorCodes.CONFIG_NOT_FOUND,
         details: { path },
       })
     }
-
     throw err
   }
 
@@ -35,7 +35,7 @@ export const loadConfig = async (path: string): Promise<ShapitConfig> => {
     rawConfig = YAML.parse(content)
   } catch (err: unknown) {
     throw new AppError(`Invalid YAML in configuration file "${path}"`, {
-      code: 'INVALID_YAML',
+      code: ErrorCodes.INVALID_YAML,
       details: err,
     })
   }
@@ -44,7 +44,7 @@ export const loadConfig = async (path: string): Promise<ShapitConfig> => {
 
   if (!result.success) {
     throw new AppError(`Invalid Shapit configuration in "${path}"`, {
-      code: 'INVALID_CONFIG',
+      code: ErrorCodes.INVALID_CONFIG,
       details: result.error.issues,
     })
   }

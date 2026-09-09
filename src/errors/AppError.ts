@@ -1,9 +1,12 @@
+import { ErrorCodes, type ErrorCode } from './error-codes.js'
+
 /*
   PATH /src/errors/AppError.js
 */
 export interface AppErrorOptions {
-  code?: string
+  code?: ErrorCode
   details?: unknown
+  cause?: unknown
 }
 
 /**
@@ -15,13 +18,16 @@ export interface AppErrorOptions {
  * @param {string} [options.code='APP_ERROR'] - Machine-readable error code
  * @param {any} [options.details=null] - Additional details for debugging
  */
+
 export class AppError extends Error {
-  readonly code: string
-  readonly details: any
+  readonly code: ErrorCode
+  readonly details: unknown
 
-  constructor(message: string, { code = 'APP_ERROR', details = null }: AppErrorOptions = {}) {
-    super(message)
-
+  constructor(
+    message: string,
+    { code = ErrorCodes.INTERNAL_ERROR, details = null, cause }: AppErrorOptions = {},
+  ) {
+    super(message, { cause })
     this.name = 'AppError'
     this.code = code
     this.details = details
