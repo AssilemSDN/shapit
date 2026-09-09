@@ -36,29 +36,16 @@ export const logger: Logger = {
     if (LEVELS[level] > LEVELS[this.level]) {
       return
     }
-
-    const time = new Date().toISOString()
-    let prefix = `[${time}] [${level.toUpperCase()}]`
-
-    switch (level) {
-      case 'error':
-        prefix = chalk.red(prefix)
-        break
-
-      case 'warn':
-        prefix = chalk.yellow(prefix)
-        break
-
-      case 'info':
-        prefix = chalk.cyan(prefix)
-        break
-
-      case 'debug':
-        prefix = chalk.gray(prefix)
-        break
+    if (level === 'debug') {
+      const time = new Date().toISOString()
+      console.error(chalk.gray(`[${time}] [DEBUG]`), ...args)
+      return
     }
-
-    console.log(prefix, ...args)
+    if (level === 'warn' || level === 'error') {
+      console.error(...args)
+      return
+    }
+    console.log(...args)
   },
 
   debug(...args: unknown[]): void {
