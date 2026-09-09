@@ -1,10 +1,12 @@
 import { ErrorCodes, type ErrorCode } from './error-codes.js'
+import { ExitCodes, type ExitCode } from '../utils/exit-codes.js'
 
 /*
   PATH /src/errors/AppError.js
 */
 export interface AppErrorOptions {
   code?: ErrorCode
+  exitCode?: ExitCode
   details?: unknown
   cause?: unknown
 }
@@ -21,16 +23,23 @@ export interface AppErrorOptions {
 
 export class AppError extends Error {
   readonly code: ErrorCode
-  readonly details: unknown
+  readonly exitCode: ExitCode
+  readonly details?: unknown
 
   constructor(
     message: string,
-    { code = ErrorCodes.INTERNAL_ERROR, details = null, cause }: AppErrorOptions = {},
+    {
+      code = ErrorCodes.INTERNAL_ERROR,
+      exitCode = ExitCodes.INTERNAL_ERROR.code,
+      details,
+      cause,
+    }: AppErrorOptions = {},
   ) {
     super(message, { cause })
+
     this.name = 'AppError'
     this.code = code
+    this.exitCode = exitCode
     this.details = details
-    Error.captureStackTrace?.(this, this.constructor)
   }
 }

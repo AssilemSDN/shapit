@@ -18,3 +18,5 @@ export const ErrorCodes = {
   PATH_NOT_FOUND: 'PATH_NOT_FOUND',
   PERMISSION_DENIED: 'PERMISSION_DENIED',
 } as const
+
+export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes]

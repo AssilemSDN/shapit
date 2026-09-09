@@ -25,6 +25,9 @@ export function renderCommandResult<TData>({
     } else {
       logger.error(`${commandName} failed.`)
     }
+    if (result.error instanceof AppError && result.error.details !== null) {
+      logger.debug('Details:', result.error.details)
+    }
     if (result.error !== undefined) {
       logger.debug(`Command error : ${result.error}`)
     }

@@ -16,7 +16,7 @@ export const ExitCodes = {
     desc: 'Audit failed due to rule violations',
   },
 
-  // Invalid config
+  // Invalid input or user mistake
   USER_ERROR: {
     code: 2,
     label: 'USER_ERROR',
@@ -27,6 +27,8 @@ export const ExitCodes = {
   INTERNAL_ERROR: {
     code: 3,
     label: 'INTERNAL_ERROR',
-    desc: 'Unexpected internal error',
+    desc: 'Internal execution error',
   },
 } as const
+
+export type ExitCode = (typeof ExitCodes)[keyof typeof ExitCodes]['code']

@@ -18,7 +18,7 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "audit": "yarn npm audit --recursive --severity high",
-    "check": "yarn typecheck && yarn lint && yarn audit"
+    "check": "yarn typecheck && yarn lint && yarn format:check && yarn audit"
   },
   "dependencies": {
     "chalk": "6.0.0",
