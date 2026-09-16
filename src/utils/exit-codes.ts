@@ -17,17 +17,10 @@ export const ExitCodes = {
   },
 
   // Invalid input or user mistake
-  USER_ERROR: {
+  ERROR: {
     code: 2,
-    label: 'USER_ERROR',
-    desc: 'Invalid input or user mistake',
-  },
-
-  // Unexpected internal error
-  INTERNAL_ERROR: {
-    code: 3,
-    label: 'INTERNAL_ERROR',
-    desc: 'Internal execution error',
+    label: 'ERROR',
+    desc: 'Command failed',
   },
 } as const
 

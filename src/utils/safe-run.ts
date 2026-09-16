@@ -1,15 +1,15 @@
 /*
   PATH /src/utils/safe-run.ts
 */
-import { type ExitCode } from './exit-codes.js'
+import { ExitCodes, type ExitCode } from './exit-codes.js'
 import { AppError } from '../errors/AppError.js'
 
 export interface CommandResult<T = unknown> {
   success: boolean
   exitCode: ExitCode
   warnings: string[]
+  errors?: CommandError[]
   data?: T
-  error?: AppError
 }
 
 export interface CommandError {
@@ -25,9 +25,15 @@ export async function safeRun<T>(fn: () => Promise<CommandResult<T>>): Promise<C
     if (error instanceof AppError) {
       return {
         success: false,
-        exitCode: error.exitCode,
+        exitCode: ExitCodes.ERROR.code,
         warnings: [],
-        error,
+        errors: [
+          {
+            message: error.message,
+            code: error.code,
+            details: error.details,
+          },
+        ],
       }
     }
 

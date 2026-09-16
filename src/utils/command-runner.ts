@@ -34,7 +34,8 @@ export async function runCommand<TOptions, TData = unknown>({
     })
     process.exitCode = result.exitCode
   } catch (error: unknown) {
+    // Unexpected bug
     renderUnexpectedError(commandName, error)
-    process.exitCode = ExitCodes.INTERNAL_ERROR.code
+    process.exitCode = ExitCodes.ERROR.code
   }
 }
