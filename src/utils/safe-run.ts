@@ -18,25 +18,28 @@ export interface CommandError {
   details?: unknown
 }
 
-export async function safeRun<T>(fn: () => Promise<CommandResult<T>>): Promise<CommandResult<T>> {
-  try {
-    return await fn()
-  } catch (error) {
-    if (error instanceof AppError) {
-      return {
-        success: false,
-        exitCode: ExitCodes.ERROR.code,
-        warnings: [],
-        errors: [
-          {
-            message: error.message,
-            code: error.code,
-            details: error.details,
-          },
-        ],
+export function safeRun<TOptions, TData>(
+  fn: (options: TOptions) => Promise<CommandResult<TData>>,
+): (options: TOptions) => Promise<CommandResult<TData>> {
+  return async (options) => {
+    try {
+      return await fn(options)
+    } catch (error: unknown) {
+      if (error instanceof AppError) {
+        return {
+          success: false,
+          exitCode: ExitCodes.ERROR.code,
+          warnings: [],
+          errors: [
+            {
+              message: error.message,
+              code: error.code,
+              details: error.details,
+            },
+          ],
+        }
       }
+      throw error
     }
-
-    throw error
   }
 }

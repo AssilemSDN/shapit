@@ -1,11 +1,11 @@
 /*
   PATH /src/utils/command-runner.ts
 */
-import { renderCommandResult } from '../cli/renderer/render-command-result.js'
-import { renderUnexpectedError } from '../cli/renderer/render-unexpected-error.js'
-import { ExitCodes } from './exit-codes.js'
-import { logger } from './logger.js'
-import type { CommandResult } from './safe-run.js'
+import { renderCommandResult } from './renderer/render-command-result.js'
+import { renderUnexpectedError } from './renderer/render-unexpected-error.js'
+import { ExitCodes } from '../utils/exit-codes.js'
+import { logger } from '../utils/logger.js'
+import type { CommandResult } from '../utils/safe-run.js'
 
 export type CommandFunction<TOptions, TData = unknown> = (
   options: TOptions,

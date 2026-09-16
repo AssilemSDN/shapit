@@ -4,7 +4,7 @@
 import type { Command } from 'commander'
 
 import { auditProject } from '../commands/audit-project.js'
-import { runCommand } from '../utils/command-runner.js'
+import { runCommand } from './command-runner.js'
 import { renderAuditResult } from './renderer/render-audit-result.js'
 
 export function registerCommands(program: Command): void {
