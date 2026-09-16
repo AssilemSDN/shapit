@@ -57,8 +57,9 @@ export const enrichStructureInput: Enricher<StructureInput, StructureObservedInp
     }
 
     if (error.code === 'EACCES' || error.code === 'EPERM') {
-      throw new AppError('Permission denied', {
+      throw new AppError(`Permission denied: "${input.path}"`, {
         code: ErrorCodes.PERMISSION_DENIED,
+        details: { path: absolutePath },
         cause: error,
       })
     }
