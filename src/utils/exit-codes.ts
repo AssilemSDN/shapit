@@ -16,7 +16,7 @@ export const ExitCodes = {
     desc: 'Audit failed due to rule violations',
   },
 
-  // Invalid input or user mistake
+  // Command execution error
   ERROR: {
     code: 2,
     label: 'ERROR',
