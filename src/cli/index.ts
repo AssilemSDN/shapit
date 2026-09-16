@@ -1,9 +1,10 @@
 import { createRequire } from 'node:module'
 
-import { Command } from 'commander'
+import { Command, CommanderError } from 'commander'
 
 import { registerCommands } from './commands.js'
 import { applyGlobalOptions, registerGlobalOptions } from './options.js'
+import { ExitCodes } from '../utils/exit-codes.js'
 
 interface PackageJson {
   version: string
@@ -27,4 +28,19 @@ program.hook('preAction', () => {
   applyGlobalOptions(program)
 })
 
-await program.parseAsync()
+try {
+  await program.parseAsync()
+} catch (error: unknown) {
+  if (error instanceof CommanderError) {
+    if (
+      error.code === 'commander.helpDisplayed' ||
+      error.code === 'commander.version'
+    ) {
+      process.exitCode = ExitCodes.SUCCESS.code
+    } else {
+      process.exitCode = ExitCodes.ERROR.code
+    }
+  } else {
+    throw error
+  }
+}
