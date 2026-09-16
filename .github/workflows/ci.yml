@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Check formatting
+        run: yarn format:check
+
+      - name: Audit dependencies
+        run: yarn audit
+
+      - name: Build
+        run: yarn build
+
+      - name: Check npm package content
+        run: npm pack --dry-run
+
+  smoke:
+    name: Package smoke — Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - quality
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - 22
+          - 24
+          - 26
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Pack npm package
+        shell: bash
+        run: |
+          PACKAGE_PATH="$RUNNER_TEMP/shapit.tgz"
+          npm pack --pack-destination "$RUNNER_TEMP"
+          GENERATED_PACKAGE="$(find "$RUNNER_TEMP" -maxdepth 1 -name 'shapit-*.tgz' -print -quit)"
+          mv "$GENERATED_PACKAGE" "$PACKAGE_PATH"
+          echo "SHAPIT_PACKAGE=$PACKAGE_PATH" >> "$GITHUB_ENV"
+
+      - name: Smoke test packaged CLI
+        run: bash scripts/ci/smoke-cli.sh "$SHAPIT_PACKAGE"
+
+      - name: Smoke test public API
+        run: node scripts/ci/smoke-api.mjs "$SHAPIT_PACKAGE"
