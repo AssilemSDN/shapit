@@ -28,18 +28,17 @@ program.hook('preAction', () => {
   applyGlobalOptions(program)
 })
 
+program.exitOverride()
+
+
 try {
   await program.parseAsync()
 } catch (error: unknown) {
   if (error instanceof CommanderError) {
-    if (
-      error.code === 'commander.helpDisplayed' ||
-      error.code === 'commander.version'
-    ) {
-      process.exitCode = ExitCodes.SUCCESS.code
-    } else {
-      process.exitCode = ExitCodes.ERROR.code
-    }
+    process.exitCode =
+      error.exitCode === 0
+        ? ExitCodes.SUCCESS.code
+        : ExitCodes.ERROR.code
   } else {
     throw error
   }
