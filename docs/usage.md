@@ -26,12 +26,12 @@ The configuration path is resolved relative to the audited project.
 
 ## Global options
 
-| Option | Description |
-| --- | --- |
+| Option          | Description                   |
+| --------------- | ----------------------------- |
 | `-V, --version` | Display the installed version |
-| `--debug` | Enable debug logging |
-| `--quiet` | Only display errors |
-| `-h, --help` | Display help |
+| `--debug`       | Enable debug logging          |
+| `--quiet`       | Only display errors           |
+| `-h, --help`    | Display help                  |
 
 `--debug` and `--quiet` cannot be used together.
 
@@ -57,12 +57,12 @@ rules:
 
 Each rule contains:
 
-| Property | Required | Description |
-| --- | --- | --- |
-| `id` | Yes | Rule identifier |
-| `type` | Yes | Rule executor |
-| `description` | No | Human-readable description |
-| `parameters` | Yes | Rule-specific parameters |
+| Property      | Required | Description                |
+| ------------- | -------- | -------------------------- |
+| `id`          | Yes      | Rule identifier            |
+| `type`        | Yes      | Rule executor              |
+| `description` | No       | Human-readable description |
+| `parameters`  | Yes      | Rule-specific parameters   |
 
 The root configuration is strict. Unknown root properties are rejected.
 
@@ -72,12 +72,12 @@ The `structure` rule validates paths relative to the audited project.
 
 Parameters:
 
-| Parameter | Required | Default | Description |
-| --- | --- | --- | --- |
-| `path` | Yes | — | Relative project path |
-| `path_type` | Yes | — | `file` or `directory` |
-| `file_extension` | No | — | Allowed file extensions |
-| `required` | No | `true` | Whether the path must exist |
+| Parameter        | Required | Default | Description                 |
+| ---------------- | -------- | ------- | --------------------------- |
+| `path`           | Yes      | —       | Relative project path       |
+| `path_type`      | Yes      | —       | `file` or `directory`       |
+| `file_extension` | No       | —       | Allowed file extensions     |
+| `required`       | No       | `true`  | Whether the path must exist |
 
 ### Required file
 
@@ -118,11 +118,11 @@ rules:
 
 ## Exit codes
 
-| Code | Name | Meaning |
-| ---: | --- | --- |
-| `0` | `SUCCESS` | Audit completed and all rules passed |
-| `1` | `AUDIT_FAILED` | Audit completed but at least one rule failed |
-| `2` | `ERROR` | Shapit could not complete the command |
+| Code | Name           | Meaning                                      |
+| ---: | -------------- | -------------------------------------------- |
+|  `0` | `SUCCESS`      | Audit completed and all rules passed         |
+|  `1` | `AUDIT_FAILED` | Audit completed but at least one rule failed |
+|  `2` | `ERROR`        | Shapit could not complete the command        |
 
 Examples of execution errors:
 

@@ -30,15 +30,11 @@ program.hook('preAction', () => {
 
 program.exitOverride()
 
-
 try {
   await program.parseAsync()
 } catch (error: unknown) {
   if (error instanceof CommanderError) {
-    process.exitCode =
-      error.exitCode === 0
-        ? ExitCodes.SUCCESS.code
-        : ExitCodes.ERROR.code
+    process.exitCode = error.exitCode === 0 ? ExitCodes.SUCCESS.code : ExitCodes.ERROR.code
   } else {
     throw error
   }

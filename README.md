@@ -41,18 +41,18 @@ shapit audit
 ## What Shapit does
 
 Shapit currently provides:
-* declarative project auditing with YAML;
-* strict configuration validation;
-* required and optional filesystem paths;
-* file and directory type checks;
-* allowed file extension checks;
-* human-readable audit output;
-* debug and quiet logging modes;
-* deterministic CI-friendly exit codes;
-* an extensible rule architecture.
+
+- declarative project auditing with YAML;
+- strict configuration validation;
+- required and optional filesystem paths;
+- file and directory type checks;
+- allowed file extension checks;
+- human-readable audit output;
+- debug and quiet logging modes;
+- deterministic CI-friendly exit codes;
+- an extensible rule architecture.
 
 The currently implemented rule type is `structure`.
-
 
 ## CLI
 
@@ -91,11 +91,11 @@ const results = await audit(config, {
 
 ## Exit codes
 
-| Code | Meaning |
-| ---: | --- |
-| `0` | Audit passed |
-| `1` | Audit completed with violations |
-| `2` | Execution error |
+| Code | Meaning                         |
+| ---: | ------------------------------- |
+|  `0` | Audit passed                    |
+|  `1` | Audit completed with violations |
+|  `2` | Execution error                 |
 
 ## Documentation
 

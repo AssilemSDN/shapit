@@ -1,5 +1,5 @@
 /*
-  PATH /src/utils/command-runner.ts
+  PATH /src/cli/command-runner.ts
 */
 import { renderCommandResult } from './renderer/render-command-result.js'
 import { renderUnexpectedError } from './renderer/render-unexpected-error.js'
