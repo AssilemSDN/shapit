@@ -103,7 +103,7 @@ const results = await audit(config, {
 
 ## Requirements
 
-- Node.js `>= 22`
+- Node.js `>= 22.12.0`
 - Yarn `4.x` for repository development
 
 ## License
