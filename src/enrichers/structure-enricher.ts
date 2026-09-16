@@ -4,6 +4,8 @@ import { resolve } from 'node:path'
 
 import type { PathType, StructureInput, StructureObservedInput } from '../rules/structure/types.js'
 import type { Enricher } from './types.js'
+import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 const getPathType = (stats: Stats): PathType | 'other' => {
   if (stats.isFile()) {
@@ -43,11 +45,22 @@ export const enrichStructureInput: Enricher<StructureInput, StructureObservedInp
       actualType: getPathType(stats),
     }
   } catch (error) {
-    if (isNodeError(error) && error.code === 'ENOENT') {
+    if (!isNodeError(error)) {
+      throw error
+    }
+
+    if (error.code === 'ENOENT') {
       return {
         ...input,
         exists: false,
       }
+    }
+
+    if (error.code === 'EACCES' || error.code === 'EPERM') {
+      throw new AppError('Permission denied', {
+        code: ErrorCodes.PERMISSION_DENIED,
+        cause: error,
+      })
     }
 
     throw error
