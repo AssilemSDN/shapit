@@ -1,6 +1,20 @@
 {
   "name": "shapit",
   "version": "0.0.1",
+  "description": "Declarative CLI and API to audit the expected shape of a project",
+  "keywords": [
+    "audit",
+    "cli",
+    "project-structure",
+    "validation",
+    "yaml"
+  ],
+  "homepage": "https://github.com/AssilemSDN/shapit#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AssilemSDN/shapit.git"
+  },
   "bin": "./bin/shapit.js",
   "files": [
     "dist",
