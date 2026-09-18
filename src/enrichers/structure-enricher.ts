@@ -1,25 +1,27 @@
-import type { Stats } from "node:fs";
-import { stat } from "node:fs/promises";
-import { resolve } from "node:path";
+import type { Stats } from 'node:fs'
+import { stat } from 'node:fs/promises'
+import { resolve } from 'node:path'
 
-import type { PathType, StructureInput, StructureObservedInput } from "../rules/structure/types.js";
-import type { Enricher } from "./types.js";
+import type { PathType, StructureInput, StructureObservedInput } from '../rules/structure/types.js'
+import type { Enricher } from './types.js'
+import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
-const getPathType = (stats: Stats): PathType | "other" => {
+const getPathType = (stats: Stats): PathType | 'other' => {
   if (stats.isFile()) {
-    return "file";
+    return 'file'
   }
 
   if (stats.isDirectory()) {
-    return "directory";
+    return 'directory'
   }
 
-  return "other";
-};
+  return 'other'
+}
 
 const isNodeError = (error: unknown): error is NodeJS.ErrnoException => {
-  return error instanceof Error && "code" in error;
-};
+  return error instanceof Error && 'code' in error
+}
 
 /**
  * Enriches the provided StructureInput with observed information about the file system.
@@ -32,24 +34,36 @@ export const enrichStructureInput: Enricher<StructureInput, StructureObservedInp
   input,
   context,
 ) => {
-  const absolutePath = resolve(context.cwd, input.path);
+  const absolutePath = resolve(context.cwd, input.path)
 
   try {
-    const stats = await stat(absolutePath);
+    const stats = await stat(absolutePath)
 
     return {
       ...input,
       exists: true,
       actualType: getPathType(stats),
-    };
+    }
   } catch (error) {
-    if (isNodeError(error) && error.code === "ENOENT") {
+    if (!isNodeError(error)) {
+      throw error
+    }
+
+    if (error.code === 'ENOENT') {
       return {
         ...input,
         exists: false,
-      };
+      }
     }
 
-    throw error;
+    if (error.code === 'EACCES' || error.code === 'EPERM') {
+      throw new AppError(`Permission denied: "${input.path}"`, {
+        code: ErrorCodes.PERMISSION_DENIED,
+        details: { path: absolutePath },
+        cause: error,
+      })
+    }
+
+    throw error
   }
-};
+}

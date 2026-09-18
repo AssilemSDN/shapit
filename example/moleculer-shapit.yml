@@ -9,7 +9,7 @@ sources:
   services:
     file: .moleculer-gen/config.json
     format: json
-    select: "$.services.*"
+    select: '$.services.*'
 
 # rules definition
 rules:
@@ -22,31 +22,31 @@ rules:
     parameters:
       schema:
         type: object
-        required: ["dependencies"]
+        required: ['dependencies']
   # services files
   - id: services-files
     each:
       source: services
       as: service
-      id: "{{ service.serviceName }}"
+      id: '{{ service.serviceName }}'
     type: structure
     parameters:
-      path: "src/services/{{service.serviceDirectoryName}}/{{service.serviceFileName}}"
+      path: 'src/services/{{service.serviceDirectoryName}}/{{service.serviceFileName}}'
       path_type: file
-      file_extension: [".ts", ".js"]
+      file_extension: ['.ts', '.js']
       required: true
   # models files
   - id: models-files
     each:
       source: services
       as: service
-      id: "{{ service.serviceName }}"
+      id: '{{ service.serviceName }}'
       filter:
         property: isCrud
         equals: true
     type: structure
     parameters:
-      path: "src/models/{{service.modelFileName}}"
+      path: 'src/models/{{service.modelFileName}}'
       path_type: file
-      file_extension: [".ts", ".js"]
+      file_extension: ['.ts', '.js']
       required: true
