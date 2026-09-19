@@ -28,7 +28,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Enable Corepack
+      - name: Enable Corepack for cache detection
         run: corepack enable
 
       - name: Setup Node.js
@@ -37,6 +37,9 @@ jobs:
           node-version: 24
           cache: yarn
           cache-dependency-path: yarn.lock
+
+      - name: Check Yarn version
+        run: yarn --version
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -57,12 +60,13 @@ jobs:
         run: yarn build
 
       - name: Check npm package content
-        run: npm pack --dry-run
+        run: yarn pack --dry-run
 
   smoke:
     name: Package smoke — Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
     needs:
       - quality
 
@@ -78,25 +82,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      - name: Enable Corepack for cache detection
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: yarn.lock
 
-      - name: Setup Corepack
-        run: |
-          npm install --global corepack
-          corepack enable
+      - name: Check Yarn version
+        run: yarn --version
 
       - name: Install dependencies
         run: yarn install --immutable
 
       - name: Smoke test packaged CLI
+        shell: bash
         run: |
           PACKAGE_PATH="$RUNNER_TEMP/shapit.tgz"
           TEST_DIR="$(mktemp -d)"
           yarn pack --out "$PACKAGE_PATH"
           cd "$TEST_DIR"
+          npm init --yes >/dev/null
           npm install "$PACKAGE_PATH"
           ./node_modules/.bin/shapit --help
           ./node_modules/.bin/shapit --version
