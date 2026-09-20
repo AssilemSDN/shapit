@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Enable Corepack for cache detection
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Check Yarn version
+        run: yarn --version
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Check formatting
+        run: yarn format:check
+
+      - name: Audit dependencies
+        run: yarn audit
+
+      - name: Build
+        run: yarn build
+
+      - name: Check npm package content
+        run: yarn pack --dry-run
+
+  smoke:
+    name: Package smoke — Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    needs:
+      - quality
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - '22.12.0'
+          - '24'
+          - '26'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Enable Corepack for cache detection
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Check Yarn version
+        run: yarn --version
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Smoke test packaged CLI
+        shell: bash
+        run: |
+          PACKAGE_PATH="$RUNNER_TEMP/shapit.tgz"
+          TEST_DIR="$(mktemp -d)"
+          yarn pack --out "$PACKAGE_PATH"
+          cd "$TEST_DIR"
+          npm init --yes >/dev/null
+          npm install "$PACKAGE_PATH"
+          ./node_modules/.bin/shapit --help
+          ./node_modules/.bin/shapit --version
