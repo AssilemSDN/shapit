@@ -1,6 +1,6 @@
 {
   "name": "shapit",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Declarative CLI and API to audit the expected shape of a project",
   "keywords": [
     "audit",
