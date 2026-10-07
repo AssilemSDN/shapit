@@ -3,7 +3,7 @@ name: Release Please
 on:
   push:
     branches:
-      - ci/release-bootstrap
+      - main
   workflow_dispatch:
 
 permissions:
@@ -19,6 +19,5 @@ jobs:
       - name: Release Please
         uses: googleapis/release-please-action@v5
         with:
-          target-branch: ci/release-bootstrap
           config-file: .github/release-please-config.json
           manifest-file: .github/.release-please-manifest.json
