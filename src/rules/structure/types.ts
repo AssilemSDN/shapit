@@ -1,4 +1,6 @@
-export type PathType = 'file' | 'directory'
+export type PathType = 'file' | 'directory' | 'any'
+
+export type PathRequirement = 'exist' | 'not_exist'
 
 /**
  * Represents the input structure for a rule that checks the existence
@@ -6,17 +8,22 @@ export type PathType = 'file' | 'directory'
  */
 export interface StructureInput {
   path: string
-  pathType: PathType
-  fileExtension?: string[]
-  required: boolean
+  kind: PathType
+  must: PathRequirement
 }
 
 /**
- * Represents the observed input structure for a rule that checks the existence
- * and type of a file system path, including additional information about
- * whether the path exists and its actual type.
+ * Represents the observed state of a resolved file system path.
+ */
+export interface PathObservation {
+  path: string
+  exists: boolean
+  actualType?: Exclude<PathType, 'any'> | 'other'
+}
+
+/**
+ * Represents a path rule enriched with file system observations.
  */
 export interface StructureObservedInput extends StructureInput {
-  exists: boolean
-  actualType?: PathType | 'other'
+  observations: PathObservation[]
 }

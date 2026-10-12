@@ -8,13 +8,18 @@ import type { ShapitConfig } from './types.js'
 import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 
+export interface LoadedConfig {
+  config: ShapitConfig
+  warnings: string[]
+}
+
 /**
  * Loads and parses the Shapit configuration file from the specified path.
  *
  * @param path
  * @returns A promise that resolves to the parsed Shapit configuration.
  */
-export const loadConfig = async (path: string): Promise<ShapitConfig> => {
+export const loadConfig = async (path: string): Promise<LoadedConfig> => {
   let content: string
 
   try {
@@ -49,5 +54,14 @@ export const loadConfig = async (path: string): Promise<ShapitConfig> => {
     })
   }
 
-  return result.data
+  const warnings: string[] = []
+
+  if (result.data.version === undefined) {
+    warnings.push(`Configuration version not specified. Using version ${result.data.version}.`)
+  }
+
+  return {
+    config: result.data,
+    warnings,
+  }
 }

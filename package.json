@@ -43,6 +43,7 @@
     "check": "yarn typecheck && yarn lint && yarn format:check && yarn audit"
   },
   "dependencies": {
+    "brace-expansion": "5.0.12",
     "chalk": "6.0.1",
     "commander": "15.0.0",
     "log-symbols": "7.0.1",

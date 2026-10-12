@@ -1,5 +1,8 @@
 import { z } from 'zod'
 
+export const LATEST_CONFIG_VERSION = 1
+export const DEFAULT_CONFIG_VERSION = 1
+
 /**
  * Defines the schema for the Shapit configuration file using Zod.
  * The configuration consists of an array of rule definitions, where each rule has:
@@ -9,6 +12,8 @@ import { z } from 'zod'
  */
 export const shapitConfigSchema = z
   .object({
+    // All known version
+    version: z.literal(1).default(DEFAULT_CONFIG_VERSION),
     // The 'rules' property is an array of rule definitions
     rules: z.array(
       // Each rule definition is an object

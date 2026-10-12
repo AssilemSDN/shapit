@@ -1,47 +1,51 @@
-import { extname } from 'node:path'
-
 import type { RuleResult } from '../../core/types.js'
 import type { StructureObservedInput } from './types.js'
 
 /**
- * Audits the provided StructureObservedInput to determine if it meets
- * the specified requirements.
+ * Audits a path rule against its existence and type requirements.
  *
- * @param input - The StructureObservedInput containing observed information about
- * the file system.
- * @returns A RuleResult indicating whether the input is valid and any associated message.
+ * For "exist", at least one observed path must exist and matchthe expected kind.
+ *
+ * For "not_exist", all observed paths must be absent, regardless of their actual type.
+ *
+ * @param input - The path rule enriched with file system observations.
+ * @returns A RuleResult indicating whether the rule is satisfied.
  */
 export const auditStructure = (input: StructureObservedInput): RuleResult => {
-  if (!input.exists) {
-    if (input.required) {
+  const { path, kind, must, observations } = input
+
+  if (must === 'not_exist') {
+    const existing = observations.filter(({ exists }) => exists)
+
+    if (existing.length > 0) {
       return {
         valid: false,
-        message: `Required path "${input.path}" does not exist`,
+        message: `Path "${path}" must not exist. Found: ${existing.map(({ path }) => path).join(', ')}`,
       }
     }
 
     return { valid: true }
   }
 
-  if (input.actualType !== input.pathType) {
-    return {
-      valid: false,
-      message: `"${input.path}" must be a ${input.pathType}`,
-    }
+  const matching = observations.filter(
+    ({ exists, actualType }) => exists && (kind === 'any' || actualType === kind),
+  )
+
+  if (matching.length > 0) {
+    return { valid: true }
   }
 
-  if (
-    input.pathType === 'file' &&
-    input.fileExtension?.length &&
-    !input.fileExtension.includes(extname(input.path))
-  ) {
+  const existing = observations.filter(({ exists }) => exists)
+
+  if (existing.length > 0) {
     return {
       valid: false,
-      message: `"${input.path}" must use one of these extensions: ${input.fileExtension.join(', ')}`,
+      message: `Path "${path}" must be a ${kind}. Found incompatible types: ${existing.map(({ path, actualType }) => `${path} (${actualType})`).join(', ')}`,
     }
   }
 
   return {
-    valid: true,
+    valid: false,
+    message: `Required path "${path}" does not exist`,
   }
 }

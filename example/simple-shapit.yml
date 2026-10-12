@@ -1,16 +1,27 @@
 # shapit.yml
 
+version: 1
+
 rules:
-  - id: package.json
+  - id: readme
     type: structure
-    description: 'package.json file must exist in the project root'
+    parameters:
+      path: 'README.{md,txt}'
+
+  - id: package
+    type: structure
     parameters:
       path: package.json
-      path_type: file
-      required: true
-  - id: yarn.lock
+      kind: file
+
+  - id: tests
     type: structure
     parameters:
-      path: yarn.lock
-      path_type: file
-      required: true
+      path: tests
+      kind: directory
+
+  - id: no-env
+    type: structure
+    parameters:
+      path: .env
+      must: not_exist

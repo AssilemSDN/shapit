@@ -7,18 +7,14 @@ import type { StructureInput } from './types.js'
  * YAML properties into the internal StructureInput representation.
  */
 export const structureInputSchema = z
-  // A rule is an object
   .object({
     path: z.string().min(1),
-    path_type: z.enum(['file', 'directory']),
-    file_extension: z.array(z.string()).optional(),
-    required: z.boolean().default(true),
+    kind: z.enum(['file', 'directory', 'any']).default('any'),
+    must: z.enum(['exist', 'not_exist']).default('exist'),
   })
-  .strict() // Refuse unknown properties
-  // Transforms the validated input into a StructureInput object
+  .strict()
   .transform((value): StructureInput => ({
     path: value.path,
-    pathType: value.path_type,
-    fileExtension: value.file_extension,
-    required: value.required,
+    kind: value.kind,
+    must: value.must,
   }))
