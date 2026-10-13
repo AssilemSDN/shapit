@@ -3,16 +3,10 @@ import { readFile } from 'node:fs/promises'
 import YAML from 'yaml'
 
 import { shapitConfigSchema } from './schema.js'
-import type { ShapitConfig } from './types.js'
+import type { LoadedConfig } from './types.js'
 
 import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
-import { logger } from '../utils/logger.js'
-
-export interface LoadedConfig {
-  config: ShapitConfig
-  warnings: string[]
-}
 
 /**
  * Loads and parses the Shapit configuration file from the specified path.

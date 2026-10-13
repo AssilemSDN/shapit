@@ -83,7 +83,8 @@ Shapit can also be used programmatically:
 ```ts
 import { audit, loadConfig } from 'shapit'
 
-const config = await loadConfig('./shapit.yml')
+const { config, warnings } = await loadConfig('./shapit.yml')
+
 const results = await audit(config, {
   cwd: process.cwd(),
 })
