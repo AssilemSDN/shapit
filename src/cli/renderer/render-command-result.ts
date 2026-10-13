@@ -1,5 +1,6 @@
 import { logger } from '../../utils/logger.js'
 import type { CommandResult } from '../../utils/safe-run.js'
+import { formatErrorDetails } from './error-details-formatter.js'
 
 interface RenderCommandResultOptions<TData> {
   commandName: string
@@ -12,11 +13,12 @@ export function renderCommandResult<TData>({
   result,
   renderData,
 }: RenderCommandResultOptions<TData>): void {
-  if (result.data !== undefined && renderData !== undefined) {
-    renderData(result.data)
-  }
   for (const warning of result.warnings) {
     logger.warn(warning)
+  }
+
+  if (result.data !== undefined && renderData !== undefined) {
+    renderData(result.data)
   }
 
   logger.debug('Command result: ', result)
@@ -25,6 +27,9 @@ export function renderCommandResult<TData>({
     if (result.errors?.length) {
       for (const error of result.errors) {
         logger.error(error.message)
+        for (const message of formatErrorDetails(error.details)) {
+          logger.error(` - ${message}`)
+        }
 
         if (error.details !== undefined) {
           logger.debug('Details:', error.details)
