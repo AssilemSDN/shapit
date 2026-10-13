@@ -4,7 +4,7 @@ import type { StructureObservedInput } from './types.js'
 /**
  * Audits a path rule against its existence and type requirements.
  *
- * For "exist", at least one observed path must exist and matchthe expected kind.
+ * For "exist", at least one observed path must exist and match the expected kind.
  *
  * For "not_exist", all observed paths must be absent, regardless of their actual type.
  *
@@ -15,6 +15,7 @@ export const auditStructure = (input: StructureObservedInput): RuleResult => {
   const { path, kind, must, observations } = input
 
   const existing = observations.filter(({ exists }) => exists)
+  const expectedPaths = observations.map(({ path }) => path).join(', ')
 
   if (must === 'not_exist') {
     if (existing.length > 0) {
@@ -37,7 +38,7 @@ export const auditStructure = (input: StructureObservedInput): RuleResult => {
   if (existing.length > 0) {
     return {
       valid: false,
-      message: `Path "${path}" must be a ${kind}. Found incompatible types: ${existing.map(({ path, actualType }) => `${path} (${actualType})`).join(', ')}`,
+      message: `No matching ${kind} found for ${expectedPaths}.\n  Found: ${existing.map(({ path, actualType }) => `${path} (${actualType})`).join(', ')}`,
     }
   }
 
@@ -52,6 +53,6 @@ export const auditStructure = (input: StructureObservedInput): RuleResult => {
 
   return {
     valid: false,
-    message: `None of the expected paths found: ${observations.map(({ path }) => path).join(', ')}`,
+    message: `None of the expected paths found: ${expectedPaths}`,
   }
 }

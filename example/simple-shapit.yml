@@ -8,22 +8,11 @@ rules:
     parameters:
       path: 'README.{md,txt}'
 
-  - id: readme
-    type: structure
-    parameters:
-      path: 'README.{md,txt}'
-
   - id: package
     type: structure
     parameters:
       path: package.json
       kind: file
-
-  - id: tests
-    type: structure
-    parameters:
-      path: tests
-      kind: directory
 
   - id: tests
     type: structure
