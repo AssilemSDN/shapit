@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 export const LATEST_CONFIG_VERSION = 1
 export const DEFAULT_CONFIG_VERSION = 1
@@ -28,5 +29,24 @@ export const shapitConfigSchema = z
       }),
     ),
     // refuse unknown properties in the configuration object
+  })
+  .superRefine((data, ctx) => {
+    // Check unicity of id
+    const idSeen = new Set<string>()
+    data.rules.forEach((rule, index) => {
+      if (idSeen.has(rule.id)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['rules', index, 'id'],
+          message: `Duplicate rule ID: "${rule.id}"`,
+          params: {
+            errorCode: ErrorCodes.DUPLICATE_RULE_ID,
+            ruleId: rule.id,
+          },
+        })
+      } else {
+        idSeen.add(rule.id)
+      }
+    })
   })
   .strict()
