@@ -1,5 +1,7 @@
 # shapit.yml
 
+version: 1
+
 rules:
   - id: readme
     type: structure
