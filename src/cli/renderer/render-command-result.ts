@@ -18,6 +18,9 @@ export function renderCommandResult<TData>({
   for (const warning of result.warnings) {
     logger.warn(warning)
   }
+
+  logger.debug('Command result: ', result)
+
   if (!result.success) {
     if (result.errors?.length) {
       for (const error of result.errors) {
@@ -36,5 +39,4 @@ export function renderCommandResult<TData>({
   }
 
   logger.success(`${commandName} completed successfully.`)
-  logger.debug('Command result: ', result)
 }

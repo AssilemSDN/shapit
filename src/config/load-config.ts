@@ -7,6 +7,7 @@ import type { ShapitConfig } from './types.js'
 
 import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
+import { logger } from '../utils/logger.js'
 
 export interface LoadedConfig {
   config: ShapitConfig
@@ -56,7 +57,12 @@ export const loadConfig = async (path: string): Promise<LoadedConfig> => {
 
   const warnings: string[] = []
 
-  if (result.data.version === undefined) {
+  if (
+    typeof rawConfig === 'object' &&
+    rawConfig !== null &&
+    !Array.isArray(rawConfig) &&
+    !Object.hasOwn(rawConfig, 'version')
+  ) {
     warnings.push(`Configuration version not specified. Using version ${result.data.version}.`)
   }
 

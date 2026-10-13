@@ -14,16 +14,16 @@ import type { StructureObservedInput } from './types.js'
 export const auditStructure = (input: StructureObservedInput): RuleResult => {
   const { path, kind, must, observations } = input
 
-  if (must === 'not_exist') {
-    const existing = observations.filter(({ exists }) => exists)
+  const existing = observations.filter(({ exists }) => exists)
 
+  if (must === 'not_exist') {
     if (existing.length > 0) {
+      const paths = existing.map(({ path }) => `"${path}"`).join(', ')
       return {
         valid: false,
-        message: `Path "${path}" must not exist. Found: ${existing.map(({ path }) => path).join(', ')}`,
+        message: `Unexpected path${existing.length > 1 ? 's' : ''} found: ${paths}`,
       }
     }
-
     return { valid: true }
   }
 
@@ -34,9 +34,6 @@ export const auditStructure = (input: StructureObservedInput): RuleResult => {
   if (matching.length > 0) {
     return { valid: true }
   }
-
-  const existing = observations.filter(({ exists }) => exists)
-
   if (existing.length > 0) {
     return {
       valid: false,
@@ -44,8 +41,17 @@ export const auditStructure = (input: StructureObservedInput): RuleResult => {
     }
   }
 
+  const [firstObservation] = observations
+
+  if (observations.length === 1 && firstObservation) {
+    return {
+      valid: false,
+      message: `Path "${firstObservation.path}" not found`,
+    }
+  }
+
   return {
     valid: false,
-    message: `Required path "${path}" does not exist`,
+    message: `None of the expected paths found: ${observations.map(({ path }) => path).join(', ')}`,
   }
 }
