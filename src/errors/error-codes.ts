@@ -18,6 +18,7 @@ export const ErrorCodes = {
   // Filesystem / project
   PATH_NOT_FOUND: 'PATH_NOT_FOUND',
   PERMISSION_DENIED: 'PERMISSION_DENIED',
+  PATH_OUTSIDE_BASE_DIRECTORY: 'PATH_OUTSIDE_BASE_DIRECTORY',
 } as const
 
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes]

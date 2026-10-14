@@ -12,7 +12,7 @@ import type { StructureObservedInput } from './types.js'
  * @returns A RuleResult indicating whether the rule is satisfied.
  */
 export const auditStructure = (input: StructureObservedInput): RuleResult => {
-  const { path, kind, must, observations } = input
+  const { kind, must, observations } = input
 
   const existing = observations.filter(({ exists }) => exists)
   const expectedPaths = observations.map(({ path }) => path).join(', ')

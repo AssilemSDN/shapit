@@ -1,6 +1,5 @@
 import type { Stats } from 'node:fs'
 import { stat } from 'node:fs/promises'
-import { resolve } from 'node:path'
 import { expand } from 'brace-expansion'
 
 import type {
@@ -11,6 +10,7 @@ import type {
 import type { Enricher } from './types.js'
 import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
+import { resolvePathInside } from '../utils/resolve-project-path.js'
 
 const getPathType = (stats: Stats): PathObservation['actualType'] => {
   if (stats.isFile()) {
@@ -35,7 +35,7 @@ const isNodeError = (error: unknown): error is NodeJS.ErrnoException => {
  * @throws {AppError} If access to the path is denied.
  */
 const observePath = async (path: string, cwd: string): Promise<PathObservation> => {
-  const absolutePath = resolve(cwd, path)
+  const absolutePath = resolvePathInside(cwd, path)
 
   try {
     const stats = await stat(absolutePath)
