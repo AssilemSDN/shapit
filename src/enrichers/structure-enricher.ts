@@ -1,21 +1,24 @@
 import type { Stats } from 'node:fs'
 import { stat } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { expand } from 'brace-expansion'
 
-import type { PathType, StructureInput, StructureObservedInput } from '../rules/structure/types.js'
+import type {
+  PathObservation,
+  StructureInput,
+  StructureObservedInput,
+} from '../rules/structure/types.js'
 import type { Enricher } from './types.js'
 import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
+import { resolvePathInside } from '../utils/resolve-project-path.js'
 
-const getPathType = (stats: Stats): PathType | 'other' => {
+const getPathType = (stats: Stats): PathObservation['actualType'] => {
   if (stats.isFile()) {
     return 'file'
   }
-
   if (stats.isDirectory()) {
     return 'directory'
   }
-
   return 'other'
 }
 
@@ -24,23 +27,21 @@ const isNodeError = (error: unknown): error is NodeJS.ErrnoException => {
 }
 
 /**
- * Enriches the provided StructureInput with observed information about the file system.
+ * Inspects a resolved file system path.
  *
- * @param input - The StructureInput containing the path and expected type.
- * @param context - The project context providing necessary information for enrichment.
- * @returns A promise that resolves to a StructureObservedInput with additional observed data.
+ * @param path - The relative path to inspect.
+ * @param cwd - The project's working directory.
+ * @returns The observed existence and type of the path.
+ * @throws {AppError} If access to the path is denied.
  */
-export const enrichStructureInput: Enricher<StructureInput, StructureObservedInput> = async (
-  input,
-  context,
-) => {
-  const absolutePath = resolve(context.cwd, input.path)
+const observePath = async (path: string, cwd: string): Promise<PathObservation> => {
+  const absolutePath = resolvePathInside(cwd, path)
 
   try {
     const stats = await stat(absolutePath)
 
     return {
-      ...input,
+      path,
       exists: true,
       actualType: getPathType(stats),
     }
@@ -51,13 +52,13 @@ export const enrichStructureInput: Enricher<StructureInput, StructureObservedInp
 
     if (error.code === 'ENOENT') {
       return {
-        ...input,
+        path,
         exists: false,
       }
     }
 
     if (error.code === 'EACCES' || error.code === 'EPERM') {
-      throw new AppError(`Permission denied: "${input.path}"`, {
+      throw new AppError(`Permission denied: "${path}"`, {
         code: ErrorCodes.PERMISSION_DENIED,
         details: { path: absolutePath },
         cause: error,
@@ -65,5 +66,33 @@ export const enrichStructureInput: Enricher<StructureInput, StructureObservedInp
     }
 
     throw error
+  }
+}
+
+/**
+ * Enriches a path rule with file system observations.
+ *
+ * Expands brace expressions into individual paths, resolves them relative
+ * to the project's working directory, and inspects their existence and type.
+ *
+ * Observations are collected concurrently and preserve expansion order.
+ * This enricher does not evaluate rule requirements.
+ *
+ * @param input - The path rule parameters.
+ * @param context - The project context.
+ * @returns The input enriched with observations for each expanded path.
+ * @throws {AppError} If access to a path is denied.
+ */
+export const enrichStructureInput: Enricher<StructureInput, StructureObservedInput> = async (
+  input,
+  context,
+) => {
+  const paths = [...new Set(expand(input.path))]
+
+  const observations = await Promise.all(paths.map((path) => observePath(path, context.cwd)))
+
+  return {
+    ...input,
+    observations,
   }
 }

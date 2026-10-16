@@ -18,7 +18,7 @@ export const auditProject = safeRun(async ({ projectDir, configFile }: AuditProj
   logger.debug('Project directory:', cwd)
   logger.debug('Configuration file:', configPath)
 
-  const config = await loadConfig(configPath)
+  const { config, warnings } = await loadConfig(configPath)
   const results = await audit(config, { cwd })
   const failed = results.filter((result) => !result.valid)
   const success = failed.length === 0
@@ -26,7 +26,7 @@ export const auditProject = safeRun(async ({ projectDir, configFile }: AuditProj
   return {
     success,
     exitCode: success ? ExitCodes.SUCCESS.code : ExitCodes.AUDIT_FAILED.code,
-    warnings: [],
+    warnings,
     data: {
       total: results.length,
       passed: results.length - failed.length,

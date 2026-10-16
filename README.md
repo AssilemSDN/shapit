@@ -14,22 +14,29 @@ Define project constraints in a YAML configuration file, run an audit, and let S
 Create a `shapit.yml` file:
 
 ```yaml
+version: 1
+
 rules:
   - id: package-json
     type: structure
     description: 'package.json must exist in the project root'
     parameters:
       path: package.json
-      path_type: file
-      required: true
+      kind: file
 
   - id: source-directory
     type: structure
     description: 'src must be a directory'
     parameters:
       path: src
-      path_type: directory
-      required: true
+      kind: directory
+
+  - id: no-env
+    type: structure
+    description: 'The .env file must not exist'
+    parameters:
+      path: .env
+      must: not_exist
 ```
 
 Then run the audit:
@@ -38,21 +45,23 @@ Then run the audit:
 shapit audit
 ```
 
+Shapit evaluates the configured rules and reports whether your project satisfies them.
+
 ## What Shapit does
 
 Shapit currently provides:
 
 - declarative project auditing with YAML;
-- strict configuration validation;
-- required and optional filesystem paths;
+- versioned and strictly validated configuration;
+- required and forbidden filesystem paths;
 - file and directory type checks;
-- allowed file extension checks;
-- human-readable audit output;
+- alternative paths using brace expansion;
+- human-readable audit results and diagnostics;
 - debug and quiet logging modes;
 - deterministic CI-friendly exit codes;
-- an extensible rule architecture.
+- an extensible, modular rule architecture.
 
-The currently implemented rule type is `structure`.
+The currently implemented rule type is `structure`. Additional rule types are planned for future releases.
 
 ## CLI
 
@@ -76,6 +85,8 @@ shapit audit --config config/shapit.yml
 shapit --debug audit
 ```
 
+Configuration files can be located outside the audited project. Rule paths are resolved relative to the audited project's root directory.
+
 ## Programmatic API
 
 Shapit can also be used programmatically:
@@ -83,11 +94,14 @@ Shapit can also be used programmatically:
 ```ts
 import { audit, loadConfig } from 'shapit'
 
-const config = await loadConfig('./shapit.yml')
+const { config, warnings } = await loadConfig('./shapit.yml')
+
 const results = await audit(config, {
   cwd: process.cwd(),
 })
 ```
+
+The API provides structured audit results and configuration warnings without relying on CLI output.
 
 ## Exit codes
 

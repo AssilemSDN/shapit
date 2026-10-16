@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import YAML from 'yaml'
 
 import { shapitConfigSchema } from './schema.js'
-import type { ShapitConfig } from './types.js'
+import type { LoadedConfig } from './types.js'
 
 import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
@@ -14,7 +14,7 @@ import { ErrorCodes } from '../errors/error-codes.js'
  * @param path
  * @returns A promise that resolves to the parsed Shapit configuration.
  */
-export const loadConfig = async (path: string): Promise<ShapitConfig> => {
+export const loadConfig = async (path: string): Promise<LoadedConfig> => {
   let content: string
 
   try {
@@ -49,5 +49,19 @@ export const loadConfig = async (path: string): Promise<ShapitConfig> => {
     })
   }
 
-  return result.data
+  const warnings: string[] = []
+
+  if (
+    typeof rawConfig === 'object' &&
+    rawConfig !== null &&
+    !Array.isArray(rawConfig) &&
+    !Object.hasOwn(rawConfig, 'version')
+  ) {
+    warnings.push(`Configuration version not specified. Using version ${result.data.version}.`)
+  }
+
+  return {
+    config: result.data,
+    warnings,
+  }
 }

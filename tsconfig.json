@@ -4,14 +4,14 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "types": ["node"],
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "rootDir": ".",
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "declaration": true,
     "sourceMap": true,
     "verbatimModuleSyntax": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noEmit": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.ts", "vitest.config.ts"]
 }

@@ -21,9 +21,7 @@ export function registerCommands(program: Command): void {
           projectDir,
           configFile: options.config,
         },
-        renderData: ({ results }) => {
-          renderAuditResult(results)
-        },
+        renderData: renderAuditResult,
       })
     })
 }

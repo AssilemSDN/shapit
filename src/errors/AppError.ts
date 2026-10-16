@@ -1,8 +1,8 @@
-import { ErrorCodes, type ErrorCode } from './error-codes.js'
-
 /*
   PATH /src/errors/AppError.js
 */
+import { ErrorCodes, type ErrorCode } from './error-codes.js'
+
 export interface AppErrorOptions {
   code?: ErrorCode
   details?: unknown

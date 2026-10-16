@@ -1,47 +1,58 @@
-import { extname } from 'node:path'
-
 import type { RuleResult } from '../../core/types.js'
 import type { StructureObservedInput } from './types.js'
 
 /**
- * Audits the provided StructureObservedInput to determine if it meets
- * the specified requirements.
+ * Audits a path rule against its existence and type requirements.
  *
- * @param input - The StructureObservedInput containing observed information about
- * the file system.
- * @returns A RuleResult indicating whether the input is valid and any associated message.
+ * For "exist", at least one observed path must exist and match the expected kind.
+ *
+ * For "not_exist", all observed paths must be absent, regardless of their actual type.
+ *
+ * @param input - The path rule enriched with file system observations.
+ * @returns A RuleResult indicating whether the rule is satisfied.
  */
 export const auditStructure = (input: StructureObservedInput): RuleResult => {
-  if (!input.exists) {
-    if (input.required) {
+  const { kind, must, observations } = input
+
+  const existing = observations.filter(({ exists }) => exists)
+  const expectedPaths = observations.map(({ path }) => path).join(', ')
+
+  if (must === 'not_exist') {
+    if (existing.length > 0) {
+      const paths = existing.map(({ path }) => `"${path}"`).join(', ')
       return {
         valid: false,
-        message: `Required path "${input.path}" does not exist`,
+        message: `Unexpected path${existing.length > 1 ? 's' : ''} found: ${paths}`,
       }
     }
-
     return { valid: true }
   }
 
-  if (input.actualType !== input.pathType) {
+  const matching = observations.filter(
+    ({ exists, actualType }) => exists && (kind === 'any' || actualType === kind),
+  )
+
+  if (matching.length > 0) {
+    return { valid: true }
+  }
+  if (existing.length > 0) {
     return {
       valid: false,
-      message: `"${input.path}" must be a ${input.pathType}`,
+      message: `No matching ${kind} found for ${expectedPaths}.\n  Found: ${existing.map(({ path, actualType }) => `${path} (${actualType})`).join(', ')}`,
     }
   }
 
-  if (
-    input.pathType === 'file' &&
-    input.fileExtension?.length &&
-    !input.fileExtension.includes(extname(input.path))
-  ) {
+  const [firstObservation] = observations
+
+  if (observations.length === 1 && firstObservation) {
     return {
       valid: false,
-      message: `"${input.path}" must use one of these extensions: ${input.fileExtension.join(', ')}`,
+      message: `Path "${firstObservation.path}" not found`,
     }
   }
 
   return {
-    valid: true,
+    valid: false,
+    message: `None of the expected paths found: ${expectedPaths}`,
   }
 }
