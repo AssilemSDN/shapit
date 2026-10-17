@@ -35,6 +35,13 @@ export const audit = async (
     try {
       result = await executor.execute(definition.parameters, context)
     } catch (error) {
+      if (error instanceof AppError && error.code === ErrorCodes.INVALID_RULE_CONFIG) {
+        throw new AppError(`Invalid rule parameters for "${definition.id}"`, {
+          code: error.code,
+          details: error.details,
+          cause: error,
+        })
+      }
       throw new AppError(`Error executing rule "${definition.id}"`, {
         code: ErrorCodes.RULE_EXECUTION_ERROR,
         details: {
