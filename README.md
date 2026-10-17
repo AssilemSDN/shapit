@@ -1,6 +1,6 @@
 <div align="center">
   <img
-    src="./docs/images/shapit.png"
+    src="https://raw.githubusercontent.com/AssilemSDN/shapit/main/docs/images/shapit.png"
     alt="shapit banner"
     width="900"
   />
@@ -20,56 +20,33 @@
 
 # Shapit
 
-> Define your project's expected shape. Let Shapit check it.
+> **Define your project's rules. Let Shapit check them.**
 
-**Shapit** is a lightweight and declarative CLI to audit the expected shape of a project.
+**Shapit** is a lightweight, declarative CLI for auditing projects against configurable rules.
 
-Define project constraints in a YAML configuration file, run an audit, and let Shapit verify that the project matches the expected shape.
+Define your project conventions in a YAML file, run an audit, and get clear feedback on whether your project meets your standards.
+
+Built around an extensible rule system, Shapit is designed to validate differents aspects of a project through dedicated rule types.
+
+> Currently, Shapit supports **structural rules** to verify the presence or absence of files dans directories. More rule types are planned for future releases.
 
 > [!WARNING]
-> Shapit is under active development. The configuration format and public API may change before a stable release.
+> Shapit is under active development. Its configuration format and public API may change before a stable release.
 
 ## Quick start
 
-Create a `shapit.yml` file:
+Create a `shapit.yml` file in your project root.
 
-```yaml
-version: 1
-
-rules:
-  - id: package-json
-    type: structure
-    description: 'package.json must exist in the project root'
-    parameters:
-      path: package.json
-      kind: file
-
-  - id: source-directory
-    type: structure
-    description: 'src must be a directory'
-    parameters:
-      path: src
-      kind: directory
-
-  - id: readme
-    type: structure
-    description: 'A README file must exist'
-    parameters:
-      path: README.{md,txt}
-      kind: file
-
-  - id: no-env
-    type: structure
-    description: 'The .env file must not exist'
-    parameters:
-      path: .env
-      must: not_exist
-```
-
-Then run the audit:
+Then run Shapit directly with npx:
 
 ```bash
-shapit audit
+npx shapit audit
+```
+
+Or install it as a development dependency:
+
+```bash
+npm install --save-dev shapit
 ```
 
 Shapit evaluates the configured rules and reports whether your project satisfies them.
@@ -140,7 +117,7 @@ The API provides structured audit results and configuration warnings without rel
 
 ## Documentation
 
-- [Usage & configuration](docs/usage.md)
+- [Usage & configuration](https://github.com/AssilemSDN/shapit/blob/main/docs/usage.md)
 
 ## Requirements
 
