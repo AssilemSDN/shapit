@@ -49,7 +49,7 @@ npm install --save-dev shapit
 
 Shapit evaluates the configured rules and reports whether your project satisfies them.
 
-## What Shapit does
+## Features
 
 Shapit currently provides:
 
@@ -69,26 +69,28 @@ Shapit currently provides:
 ## CLI
 
 ```text
-shapit audit [project-dir] [options]
+npx shapit audit [project-dir] [options]
 ```
 
 Common examples:
 
 ```bash
 # Audit the current directory using shapit.yml
-shapit audit
+npx shapit audit
 
 # Audit another project
-shapit audit ../my-project
+npx shapit audit ../my-project
 
 # Use another configuration file
-shapit audit --config config/shapit.yml
+npx shapit audit --config config/shapit.yml
 
 # Enable debug output
-shapit --debug audit
+npx shapit --debug audit
 ```
 
 Configuration files can be located outside the audited project. Rule paths are resolved relative to the audited project's root directory.
+
+For detailed usage and options, see the [documentation](https://github.com/AssilemSDN/shapit/blob/main/docs/usage.md)
 
 ## Programmatic API
 
@@ -113,10 +115,6 @@ The API provides structured audit results and configuration warnings without rel
 |  `0` | Audit passed                    |
 |  `1` | Audit completed with violations |
 |  `2` | Execution error                 |
-
-## Documentation
-
-- [Usage & configuration](https://github.com/AssilemSDN/shapit/blob/main/docs/usage.md)
 
 ## Requirements
 
