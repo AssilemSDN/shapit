@@ -35,7 +35,7 @@ export const audit = async (
     try {
       result = await executor.execute(definition.parameters, context)
     } catch (error) {
-      throw new AppError(`Error executing rule "${definition.id}" of type "${definition.type}"`, {
+      throw new AppError(`Error executing rule "${definition.id}"`, {
         code: ErrorCodes.RULE_EXECUTION_ERROR,
         details: {
           ruleId: definition.id,
@@ -44,7 +44,6 @@ export const audit = async (
         },
       })
     }
-
     results.push({
       id: definition.id,
       type: definition.type,
