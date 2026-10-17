@@ -74,15 +74,30 @@ rules:
     },
   },
   {
-    name: 'rejects invalid rule parameters with rule id',
+    name: 'rejects invalid rule parameters',
     config: `
 version: 1
 rules:
-  - id: readme
+  - id: invalid-kind
     type: structure
     parameters:
       path: README.md
-      kind: invalid
+      kind: banana
+`,
+    expected: {
+      exitCode: 2,
+      errorCode: 'INVALID_RULE_CONFIG',
+    },
+  },
+  {
+    name: 'handles rule execution errors',
+    config: `
+version: 1
+rules:
+  - id: invalid-path
+    type: structure
+    parameters:
+      path: "invalid\\u0000path"
 `,
     expected: {
       exitCode: 2,
