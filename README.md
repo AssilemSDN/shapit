@@ -28,8 +28,6 @@ Define your project conventions in a YAML file, run an audit, and get clear feed
 
 Built around an extensible rule system, Shapit is designed to validate differents aspects of a project through dedicated rule types.
 
-> Currently, Shapit supports **structural rules** to verify the presence or absence of files dans directories. More rule types are planned for future releases.
-
 > [!WARNING]
 > Shapit is under active development. Its configuration format and public API may change before a stable release.
 
@@ -55,17 +53,18 @@ Shapit evaluates the configured rules and reports whether your project satisfies
 
 Shapit currently provides:
 
-- declarative project auditing with YAML;
-- versioned and strictly validated configuration;
-- required and forbidden filesystem paths;
-- file and directory type checks;
-- alternative paths using brace expansion;
-- human-readable audit results and diagnostics;
-- debug and quiet logging modes;
-- deterministic CI-friendly exit codes;
-- an extensible, modular rule architecture.
+- **Declarative configuration** - Define project requirements using YAML;
+- **Extensible rule system** - Support for dedicated rule types
+- **CLI & API** - Run audits from the terminal or programmatically
+- **CI-ready** - Structured results and predictable exit codes
 
-The currently implemented rule type is `structure`. Additional rule types are planned for future releases.
+### Available rule types
+
+|        Type | Description                                                                             |
+| ----------: | --------------------------------------------------------------------------------------- |
+| `structure` | Validate required and forbidden paths, file and directory types, and path alternatives. |
+
+> Additional rule types are planned for future releases.
 
 ## CLI
 
