@@ -1,3 +1,21 @@
+<div align="center">
+  <img
+    src="./docs/images/shapit.png"
+    alt="shapit banner"
+    width="900"
+  />
+</div>
+
+<br />
+
+<div align="center">
+  [![CI](https://github.com/AssilemSDN/shapit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AssilemSDN/shapit/actions/workflows/ci.yml)
+  [![codecov](https://codecov.io/github/AssilemSDN/shapit/graph/badge.svg?token=IBG74CEDTK)](https://codecov.io/github/AssilemSDN/shapit)
+  ![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024%20%7C%2026-339933?logo=node.js&logoColor=white)
+  ![Yarn](https://img.shields.io/badge/Yarn-4.18.0-2C8EBB?logo=yarn&logoColor=white)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+</div>
+
 # Shapit
 
 > Define your project's expected shape. Let Shapit check it.
