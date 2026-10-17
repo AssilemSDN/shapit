@@ -59,6 +59,11 @@ jobs:
       - name: Run tests with coverage
         run: yarn test:coverage
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Build
         run: yarn build
 
