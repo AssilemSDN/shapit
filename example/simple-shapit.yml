@@ -3,25 +3,30 @@
 version: 1
 
 rules:
-  - id: readme
+  - id: package-json
     type: structure
-    parameters:
-      path: 'README.{md,txt}'
-
-  - id: package
-    type: structure
+    description: 'package.json must exist in the project root'
     parameters:
       path: package.json
       kind: file
 
-  - id: tests
+  - id: source-directory
     type: structure
+    description: 'src must be a directory'
     parameters:
-      path: tests
+      path: src
       kind: directory
+
+  - id: readme
+    type: structure
+    description: 'A README file must exist'
+    parameters:
+      path: README.{md,txt}
+      kind: file
 
   - id: no-env
     type: structure
+    description: 'The .env file must not exist'
     parameters:
       path: .env
       must: not_exist
