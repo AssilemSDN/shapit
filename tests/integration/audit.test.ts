@@ -33,6 +33,9 @@ describe('auditProject integration', () => {
         expect(result.data).toBeUndefined()
         expect(result.errors).toHaveLength(1)
         expect(result.errors?.[0]?.code).toBe(expected.errorCode)
+        if (expected.errorMessage) {
+          expect(result.errors?.[0]?.message).toBe(expected.errorMessage)
+        }
       } else {
         // Business audit result
         expect(result.errors ?? []).toEqual([])

@@ -6,6 +6,7 @@ interface AuditScenario {
     exitCode: 0 | 1 | 2
     passed?: number
     failed?: number
+    errorMessage?: string
     errorCode?: string
     warnings?: string[]
   }
@@ -87,6 +88,7 @@ rules:
     expected: {
       exitCode: 2,
       errorCode: 'INVALID_RULE_CONFIG',
+      errorMessage: 'Invalid rule parameters for "invalid-kind"',
     },
   },
   {
@@ -102,6 +104,7 @@ rules:
     expected: {
       exitCode: 2,
       errorCode: 'RULE_EXECUTION_ERROR',
+      errorMessage: 'Error executing rule "invalid-path"',
     },
   },
 ] satisfies AuditScenario[]
