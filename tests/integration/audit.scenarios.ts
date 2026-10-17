@@ -73,4 +73,20 @@ rules:
       errorCode: 'INVALID_CONFIG',
     },
   },
+  {
+    name: 'rejects invalid rule parameters with rule id',
+    config: `
+version: 1
+rules:
+  - id: readme
+    type: structure
+    parameters:
+      path: README.md
+      kind: invalid
+`,
+    expected: {
+      exitCode: 2,
+      errorCode: 'RULE_EXECUTION_ERROR',
+    },
+  },
 ] satisfies AuditScenario[]
