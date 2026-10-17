@@ -2,7 +2,7 @@ import type { ShapitConfig } from '../config/types.js'
 import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 import { ruleRegistry } from '../rules/registry.js'
-import type { AuditResult, ProjectContext } from './types.js'
+import type { AuditResult, ProjectContext, RuleResult } from './types.js'
 
 /**
  * Audits the project based on the provided configuration and context.
@@ -31,8 +31,19 @@ export const audit = async (
         },
       })
     }
-
-    const result = await executor.execute(definition.parameters, context)
+    let result: RuleResult
+    try {
+      result = await executor.execute(definition.parameters, context)
+    } catch (error) {
+      throw new AppError(`Error executing rule "${definition.id}" of type "${definition.type}"`, {
+        code: ErrorCodes.RULE_EXECUTION_ERROR,
+        details: {
+          ruleId: definition.id,
+          ruleType: definition.type,
+          error,
+        },
+      })
+    }
 
     results.push({
       id: definition.id,
