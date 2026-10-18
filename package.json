@@ -35,6 +35,7 @@
     "build": "tsc -p tsconfig.build.json",
     "prepack": "yarn build",
     "typecheck": "tsc --noEmit",
+    "audit:self": "node bin/shapit.js audit",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "format": "oxfmt",
