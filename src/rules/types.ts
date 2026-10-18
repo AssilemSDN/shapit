@@ -26,12 +26,14 @@ export interface RuleExecutor {
 }
 
 /**
- * Creates a RuleExecutor for a given rule, allowing for the execution of the rule's
- * validation, enrichment, and auditing processes.
+ * Creates a rule executor for the given rule, which validates the input parameters,
+ * enriches the input data, and performs the audit.
+ *
  * @template TInput - The type of the input data for the rule.
  * @template TObservedInput - The type of the observed input data after enrichment.
- * @param rule - The rule to create an executor for.
- * @returns A RuleExecutor that can execute the provided rule.
+ * @param rule
+ * @returns A rule executor that can execute the rule with the provided parameters and context.
+ * @throws {AppError} Throws an AppError if the input parameters are invalid according to the rule's schema, with ErrorCodes.INVALID_RULE_CONFIG
  */
 export const createRuleExecutor = <TInput, TObservedInput>(
   rule: Rule<TInput, TObservedInput>,

@@ -3,8 +3,12 @@ import { z } from 'zod'
 import type { StructureInput } from './types.js'
 
 /**
- * Validates the parameters of a structure rule and transforms
- * YAML properties into the internal StructureInput representation.
+ * Defines the schema for validating the input of the "structure" rule using Zod.
+ *
+ * This schema ensures that the input adheres to the expected structure, including:
+ * - `path`: A non-empty string representing the file or directory path.
+ * - `kind`: An enumeration indicating the type of path, which can be 'file', 'directory', or 'any'. Defaults to 'any'.
+ * - `must`: An enumeration specifying whether the path must 'exist' or 'not_exist'. Defaults to 'exist'.
  */
 export const structureInputSchema = z
   .object({

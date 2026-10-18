@@ -5,9 +5,10 @@ import { auditStructure } from './audit.js'
 import { structureInputSchema } from './schema.js'
 
 /**
- * Extends the base RuleExecutor to create a specific executor for
- * the "structure" rule.
- * @returns A RuleExecutor that validates, enriches, and audits the structure input.
+ * Executor for the structure rule, combining parameter validation, filesystem observation and rule evaluation.
+ *
+ * This executor validates the input parameters against the defined schema, enriches the input data by observing the filesystem,
+ * and performs the audit to determine if the specified structure conditions are met.
  */
 export const structureRule = createRuleExecutor({
   schema: structureInputSchema,

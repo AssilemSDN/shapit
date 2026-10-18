@@ -1,12 +1,14 @@
 import type { ProjectContext } from '../core/types.js'
 
 /**
- * Represents the type for an enricher function that transforms input data into
- * observed input data.
+ * Represents a function that enriches input data of type `TInput` into observed input data of type `TObservedInput`.
+ * The function takes an input of type `TInput` and a `ProjectContext`, and returns a promise that resolves to the enriched data of type `TObservedInput`.
  *
- * @param TInput - The type of the input data.
- * @param TObservedInput - The type of the observed input data.
- * @returns A promise that resolves to the observed input data.
+ * @template TInput - The type of the input data to be enriched.
+ * @template TObservedInput - The type of the enriched data that is returned.
+ * @param input - The input data to be enriched.
+ * @param context - The project context providing necessary information for enrichment.
+ * @returns A promise that resolves to the enriched data of type `TObservedInput`.
  */
 export type Enricher<TInput, TObservedInput> = (
   input: TInput,

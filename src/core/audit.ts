@@ -10,6 +10,7 @@ import type { AuditResult, ProjectContext, RuleResult } from './types.js'
  * @param config - The Shapit configuration containing the rules to audit.
  * @param context - The project context providing necessary information for auditing.
  * @returns A promise that resolves to an array of audit results.
+ * @throws {AppError} Throws an AppError if an error occurs during the audit process.
  */
 export const audit = async (
   config: ShapitConfig,

@@ -14,11 +14,11 @@ export interface AppErrorOptions {
  * @class AppError
  * @extends Error
  * @param {string} message - Human-readable error message
- * @param {Object} [options]
- * @param {string} [options.code='APP_ERROR'] - Machine-readable error code
- * @param {any} [options.details=null] - Additional details for debugging
+ * @param {AppErrorOptions} [options] - Optional parameters for the error
+ * @param {ErrorCode} [options.code] - Specific error code from the predefined set
+ * @param {unknown} [options.details] - Additional details about the error
+ * @param {unknown} [options.cause] - Underlying cause of the error, if any
  */
-
 export class AppError extends Error {
   readonly code: ErrorCode
   readonly details?: unknown

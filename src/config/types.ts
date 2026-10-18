@@ -12,6 +12,12 @@ export type ShapitConfig = z.infer<typeof shapitConfigSchema>
  */
 export type RuleDefinition = ShapitConfig['rules'][number]
 
+/**
+ * Represents the type for a loaded Shapit configuration, including the configuration itself and any warnings encountered during loading.
+ *
+ * @property config - The loaded Shapit configuration.
+ * @property warnings - An array of warning messages encountered during the loading of the configuration.
+ */
 export interface LoadedConfig {
   config: ShapitConfig
   warnings: string[]

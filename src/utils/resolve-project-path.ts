@@ -4,7 +4,12 @@ import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
- * Resolves a path and ensures it stays inside the allowed base directory.
+ * Resolves a target path relative to a base directory, ensuring that the resolved path does not escape the base directory.
+ *
+ * @param baseDir - The base directory from which the target path is resolved.
+ * @param targetPath - The target path to resolve relative to the base directory.
+ * @returns The resolved absolute path of the target, if it is within the base directory.
+ * @throws {AppError} Throws an AppError if the resolved target path escapes the base directory.
  */
 export const resolvePathInside = (baseDir: string, targetPath: string): string => {
   const resolvedBase = path.resolve(baseDir)

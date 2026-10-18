@@ -8,6 +8,11 @@ interface RenderCommandResultOptions<TData> {
   renderData?: (data: TData) => void
 }
 
+/**
+ * Renders the result of a command execution to the console.
+ *
+ * @param options - The options for rendering the command result.
+ */
 export function renderCommandResult<TData>({
   commandName,
   result,
