@@ -56,6 +56,9 @@ jobs:
       - name: Audit dependencies
         run: yarn audit
 
+      - name: Build
+        run: yarn build
+
       - name: Run tests with coverage
         run: yarn test:coverage
 
@@ -63,9 +66,6 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Build
-        run: yarn build
 
       - name: Audit project conventions
         run: yarn audit:self
