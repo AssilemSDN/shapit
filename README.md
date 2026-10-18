@@ -33,7 +33,18 @@ Built around an extensible rule system, Shapit is designed to validate different
 
 ## Quick start
 
-Create a `shapit.yml` file in your project root.
+Create a `shapit.yml` file in your project root:
+
+```yaml
+version: 1
+
+rules:
+  - id: readme
+    type: structure
+    parameters:
+      path: README.md
+      kind: file
+```
 
 Then run Shapit directly with npx:
 
@@ -47,7 +58,7 @@ Or install it as a development dependency:
 npm install --save-dev shapit
 ```
 
-Shapit evaluates the configured rules and reports whether your project satisfies them.
+> Shapit evaluates the configured rules and reports whether your project satisfies them.
 
 ## Features
 
