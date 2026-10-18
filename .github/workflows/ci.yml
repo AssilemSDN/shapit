@@ -56,9 +56,6 @@ jobs:
       - name: Audit dependencies
         run: yarn audit
 
-      - name: Run tests with coverage
-        run: yarn test:coverage
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -66,6 +63,9 @@ jobs:
 
       - name: Build
         run: yarn build
+
+      - name: Run tests with coverage
+        run: yarn test:coverage
 
       - name: Audit project conventions
         run: yarn audit:self
