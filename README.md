@@ -1,91 +1,107 @@
+<div align="center">
+  <img
+    src="https://raw.githubusercontent.com/AssilemSDN/shapit/main/docs/images/shapit.png"
+    alt="shapit banner"
+    width="900"
+  />
+</div>
+
+<br />
+
+<div align="center">
+
+[![CI](https://github.com/AssilemSDN/shapit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AssilemSDN/shapit/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/github/AssilemSDN/shapit/graph/badge.svg?token=IBG74CEDTK)](https://codecov.io/github/AssilemSDN/shapit)
+![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024%20%7C%2026-339933?logo=node.js&logoColor=white)
+![Yarn](https://img.shields.io/badge/Yarn-4.18.1-2C8EBB?logo=yarn&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+</div>
+
 # Shapit
 
-> Define your project's expected shape. Let Shapit check it.
+> **Define your project's rules. Let Shapit check them.**
 
-**Shapit** is a lightweight and declarative CLI to audit the expected shape of a project.
+**Shapit** is a lightweight, declarative CLI for auditing projects against configurable rules.
 
-Define project constraints in a YAML configuration file, run an audit, and let Shapit verify that the project matches the expected shape.
+Define your project conventions in a YAML file, run an audit, and get clear feedback on whether your project meets your standards.
+
+Built around an extensible rule system, Shapit is designed to validate differents aspects of a project through dedicated rule types.
 
 > [!WARNING]
-> Shapit is under active development. The configuration format and public API may change before a stable release.
+> Shapit is under active development. Its configuration format and public API may change before a stable release.
 
 ## Quick start
 
-Create a `shapit.yml` file:
+Create a `shapit.yml` file in your project root:
 
 ```yaml
 version: 1
 
 rules:
-  - id: package-json
+  - id: readme
     type: structure
-    description: 'package.json must exist in the project root'
     parameters:
-      path: package.json
+      path: README.md
       kind: file
-
-  - id: source-directory
-    type: structure
-    description: 'src must be a directory'
-    parameters:
-      path: src
-      kind: directory
-
-  - id: no-env
-    type: structure
-    description: 'The .env file must not exist'
-    parameters:
-      path: .env
-      must: not_exist
 ```
 
-Then run the audit:
+Then run Shapit directly with npx:
 
 ```bash
-shapit audit
+npx shapit audit
 ```
 
-Shapit evaluates the configured rules and reports whether your project satisfies them.
+Or install it as a development dependency:
 
-## What Shapit does
+```bash
+npm install --save-dev shapit
+```
+
+> Shapit evaluates the configured rules and reports whether your project satisfies them.
+
+## Features
 
 Shapit currently provides:
 
-- declarative project auditing with YAML;
-- versioned and strictly validated configuration;
-- required and forbidden filesystem paths;
-- file and directory type checks;
-- alternative paths using brace expansion;
-- human-readable audit results and diagnostics;
-- debug and quiet logging modes;
-- deterministic CI-friendly exit codes;
-- an extensible, modular rule architecture.
+- **Declarative configuration** - Define project requirements using YAML;
+- **Extensible rule system** - Support for dedicated rule types
+- **CLI & API** - Run audits from the terminal or programmatically
+- **CI-ready** - Structured results and predictable exit codes
 
-The currently implemented rule type is `structure`. Additional rule types are planned for future releases.
+### Available rule types
+
+|        Type | Description                                                                             |
+| ----------: | --------------------------------------------------------------------------------------- |
+| `structure` | Validate required and forbidden paths, file and directory types, and path alternatives. |
+
+> Additional rule types are planned for future releases.
 
 ## CLI
 
 ```text
-shapit audit [project-dir] [options]
+npx shapit audit [project-dir] [options]
 ```
 
 Common examples:
 
 ```bash
 # Audit the current directory using shapit.yml
-shapit audit
+npx shapit audit
 
 # Audit another project
-shapit audit ../my-project
+npx shapit audit ../my-project
 
 # Use another configuration file
-shapit audit --config config/shapit.yml
+npx shapit audit --config config/shapit.yml
 
 # Enable debug output
-shapit --debug audit
+npx shapit --debug audit
 ```
 
 Configuration files can be located outside the audited project. Rule paths are resolved relative to the audited project's root directory.
+
+For detailed usage and options, see the [documentation](https://github.com/AssilemSDN/shapit/blob/main/docs/usage.md)
 
 ## Programmatic API
 
@@ -110,10 +126,6 @@ The API provides structured audit results and configuration warnings without rel
 |  `0` | Audit passed                    |
 |  `1` | Audit completed with violations |
 |  `2` | Execution error                 |
-
-## Documentation
-
-- [Usage & configuration](docs/usage.md)
 
 ## Requirements
 

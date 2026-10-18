@@ -1,8 +1,10 @@
 # Usage & configuration
 
-This document contains the user-facing Shapit reference.
+This document covers Shapit's CLI usage, configuration format, supported rules, and programmatic API.
 
 ## Run an audit
+
+Run Shapit using:
 
 ```bash
 shapit audit [project-dir] [options]
@@ -16,13 +18,20 @@ By default:
 Examples:
 
 ```bash
-shapit audit
-shapit audit ../my-project
-shapit audit --config config/shapit.yml
-shapit audit ../my-project --config .config/shapit.yml
+# Audit the current directory
+npx shapit audit
+
+# Audit another project
+npx shapit audit ../my-project
+
+# Use a custom configuration file
+npx shapit audit --config config/shapit.yml
+
+# Combine a project directory and custom configuration
+npx shapit audit ../my-project --config .config/shapit.yml
 ```
 
-The configuration path is resolved relative to the audited project.
+The configuration path is resolved relative to the audited project directory.
 
 ## Global options
 
@@ -33,7 +42,7 @@ The configuration path is resolved relative to the audited project.
 | `--quiet`       | Only display errors           |
 | `-h, --help`    | Display help                  |
 
-`--debug` and `--quiet` cannot be used together.
+> `--debug` and `--quiet` are mutually exclusive.
 
 ## Audit options
 
@@ -46,7 +55,9 @@ The configuration file can be located outside the audited project by providing a
 
 ## Configuration
 
-Shapit uses a YAML configuration file named `shapit.yml` by default.
+Shapit uses a declarative YAML configuration file, named `shapit.yml` by default, to define project standards.
+
+**Example:**
 
 ```yaml
 version: 1
@@ -66,7 +77,7 @@ rules:
 | Property  | Required | Description                                                                |
 | --------- | -------- | -------------------------------------------------------------------------- |
 | `version` | No       | Configuration format version. Defaults to `1` with a warning when omitted. |
-| `rules`   | Yes      | Array of rule definitions.                                                 |
+| `rules`   | Yes      | List of rule definitions.                                                  |
 
 ### Rule properties
 
@@ -75,15 +86,15 @@ rules:
 | `id`          | Yes      | Unique, non-empty rule identifier.                   |
 | `type`        | Yes      | Rule type. Currently, only `structure` is supported. |
 | `description` | No       | Human-readable description of the rule.              |
-| `parameters`  | No       | Parameters specific to the rule type.                |
+| `parameters`  | Depends  | Parameters specific to the rule type.                |
+
+Rule identifiers must be unique within the configuration.
 
 Unknown configuration and rule properties are rejected. Rule parameters are validated separately according to their type.
 
-Rule identifiers must be unique within a configuration.
-
 ## `structure` rule
 
-The `structure` rule checks filesystem path existence and, when existence is required, validates the expected path type.
+The `structure` rule validates the presence or absence of files and directories within a project. It can also enforce the expected filesystem entry type.
 
 ### Parameters
 
@@ -93,11 +104,12 @@ The `structure` rule checks filesystem path existence and, when existence is req
 | `kind`    | No       | `any`   | Expected path type: `file`, `directory`, or `any`.         |
 | `must`    | No       | `exist` | Existence requirement: `exist` or `not_exist`.             |
 
-> The `kind` parameter only applies when `must` is `exist`. When `must` is `not_exist`, any existing path violates the rule, regardless of its type.
+> [!NOTE]
+> `kind` only applies when `must` is `exist`. When `must` is `not_exist`, any matching existing path violates the rule, regardless of its type.
 
 ### Required paths
 
-> The following examples are individual rule definitions intended to be placed under the rules property.
+Require a specific file or directory to exist:
 
 ```yaml
 - id: package-json
@@ -107,9 +119,11 @@ The `structure` rule checks filesystem path existence and, when existence is req
     kind: file
 ```
 
-The audit passes when `package.json` exists and is a file.
+The rule passes when `package.json` exists and is a file.
 
 ### Forbidden paths
+
+Prevent specific files or directories from existing:
 
 ```yaml
 - id: no-env
@@ -119,7 +133,7 @@ The audit passes when `package.json` exists and is a file.
     must: not_exist
 ```
 
-The audit passes only when `.env` is absent.
+The rule passes only when `.env` does not exist.
 
 ### Alternative paths
 
@@ -135,29 +149,37 @@ Brace expansion allows multiple alternatives in a single path expression.
 
 This expression checks `README.md` and `README.txt`.
 
-For `must: exist`, at least one alternative must exist and match the expected `kind`.
+- For `must: exist` - At least one alternative must exist and match the expected `kind`.
+- For `must: not_exist` - All alternative must be absent.
 
-For `must: not_exist`, every alternative must be absent.
+> [!NOTE]
+> Brace expansion is not glob matching. Wildcard patterns such as `src/**/*.ts` are not supported.
 
-Brace expansion is not the same as glob matching. Patterns such as `src/**/*.ts` are not supported as wildcard searches.
+The examples above are individual rule definitions intended to be placed under the `rules` property.
 
 ## Path resolution
 
-Structure rule paths are resolved relative to the audited project's root directory, independently of the configuration file's location.
+Structure rule paths are always resolved relative to the audited project's root directory, regardless of the configuration file's location.
 
-Paths must resolve inside the audited project directory.
+Paths must resolve within the audited project directory.
 
-Examples:
+**Examples:**
 
-- `src/index.ts` — allowed.
-- `src/../README.md` — allowed if it resolves inside the project.
-- `../other-project/file.ts` — rejected if it resolves outside the project.
+| Path                       | Result                                   |
+| -------------------------- | ---------------------------------------- |
+| `src/index.ts`             | Allowed                                  |
+| `src/../README.md`         | Allowed if resolved within the project   |
+| `../other-project/file.ts` | Rejected if resolved outside the project |
 
-Absolute paths are permitted only when they resolve inside the project directory.
+Absolute paths are also permitted, provided they resolve within the audited project directory.
 
-Path containment prevents lexical traversal outside the project root but does not provide a complete filesystem security boundary. Symbolic links may resolve to targets outside the audited project.
+**Security considerations**
+
+Shapit prevents lexical path traversal outside the project root. However, this is not a complete filesystem security boundary: symbolic links may resolve to targets outside the audited project.
 
 ## Exit codes
+
+Shapit uses exit codes to distinguish successful audits, rule violations, and execution errors.
 
 | Code | Name           | Meaning                                      |
 | ---: | -------------- | -------------------------------------------- |
@@ -165,42 +187,50 @@ Path containment prevents lexical traversal outside the project root but does no
 |  `1` | `AUDIT_FAILED` | Audit completed but at least one rule failed |
 |  `2` | `ERROR`        | Shapit could not complete the command        |
 
-Examples of execution errors:
+Execution errors include:
 
-- missing configuration file;
-- invalid YAML;
-- invalid Shapit configuration;
-- invalid rule parameters;
-- unknown rule type;
-- unexpected runtime error.
+- Missing configuration files
+- Invalid YAML
+- Invalid Shapit configuration
+- Invalid rule parameters
+- Unsupported rule types
+- Unexpected runtime errors
 
-An audit violation is not an application error. It is a normal audit result.
+**Rule violations are not application errors.** They are expected audit results indicating that a project does not meet its configured standards.
 
 ## CI
 
 A normal CI step is enough:
 
 ```yaml
-- name: Audit project shape
-  run: yarn shapit audit
+- name: Audit project structure
+  run: npx shapit audit
 ```
 
-Any audit violation or execution error returns a non-zero exit code.
+Shapit returns a non-zero exit code when an audit fails or an execution error occurs, allowing CI pipelines to detect violations automatically.
+
+> Shapit must be installed as a project dependency before running this step. The example assumes the CI workflow has already installed dependencies.
 
 ## Programmatic API
 
-Shapit provides a programmatic API for loading configurations and auditing projects independently of the CLI.
+Shapit also provides a programmatic API for loading configurations and auditing projects independently of the CLI.
 
-### Exports
+### Public exports
 
-The following functions are available:
+**Functions**
 
-- `loadConfig()` - Loads and validates a YAML configuration, returning the parsed configuration and any warnings.
-- `audit()` - Executes the configured rules against a project and returns their results.
+| Function       | Description                                                                                    |
+| -------------- | ---------------------------------------------------------------------------------------------- |
+| `loadConfig()` | Loads and validates a YAML configuration, returning the parsed configuration and any warnings. |
+| `audit()`      | Executes configured rules against a project and returns audit results.                         |
 
-The configuration file path passed to `loadConfig()` is resolved independently of the project root passed to `audit()`.
+**Types**
 
-Shapit also exports types including `ShapitConfig`, `LoadedConfig`, `RuleDefinition`, `ProjectContext`, `RuleResult`, and `AuditResult`, as well as `AppError` and `ErrorCodes` for error handling.
+Shapit exports TypeScript types including `ShapitConfig`, `LoadedConfig`, `RuleDefinition`, `ProjectContext`, `RuleResult`, and `AuditResult`.
+
+**Error handling**
+
+`AppError` and `ErrorCodes` are also exported for handling configuration and execution errors.
 
 ### Usage
 
@@ -224,7 +254,9 @@ console.log({
 })
 ```
 
-### Behavior
+The configuration path passed to `loadConfig()` is resolved independently of the project root passed to `audit()`.
+
+### API behavior
 
 - `loadConfig()` validates the configuration and returns any non-blocking warnings.
 - `audit()` expects a validated `ShapitConfig` and returns an array of `AuditResult`.
@@ -232,4 +264,4 @@ console.log({
 - Configuration and execution errors may throw an `AppError`.
 - The programmatic API does not set process exit codes or render CLI output.
 
-**Note:** The programmatic API is available through the package's public exports but remains subject to change during the `0.x` release series.
+> **Stability:** The programmatic API is publicly available but may evolve during the `0.x` release series.
