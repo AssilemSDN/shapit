@@ -1,0 +1,44 @@
+version: 1
+
+rules:
+  - id: package
+    type: structure
+    parameters:
+      path: package.json
+      kind: file
+
+  - id: readme
+    type: structure
+    parameters:
+      path: README.md
+      kind: file
+
+  - id: license
+    type: structure
+    parameters:
+      path: LICENSE
+      kind: file
+
+  - id: documentation
+    type: structure
+    parameters:
+      path: docs/usage.md
+      kind: file
+
+  - id: source
+    type: structure
+    parameters:
+      path: src
+      kind: directory
+
+  - id: tests
+    type: structure
+    parameters:
+      path: tests
+      kind: directory
+
+  - id: cli-entry
+    type: structure
+    parameters:
+      path: bin/shapit.js
+      kind: file
