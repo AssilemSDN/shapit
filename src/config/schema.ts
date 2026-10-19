@@ -5,11 +5,21 @@ export const LATEST_CONFIG_VERSION = 1
 export const DEFAULT_CONFIG_VERSION = 1
 
 /**
- * Defines the schema for the Shapit configuration file using Zod.
- * The configuration consists of an array of rule definitions, where each rule has:
- * - id: A non-empty string that uniquely identifies the rule.
- * - type: A non-empty string that specifies the type of the rule.
- * - parameters: An unknown value that holds the parameters for the rule.
+ * Defines the schema for the Shapit configuration using Zod.
+ *
+ * This schema validates the structure of the configuration file, ensuring that it adheres to the expected format and contains all required properties.
+ *
+ * The schema includes:
+ * - `version`: A literal value representing the configuration version, defaulting to `DEFAULT_CONFIG_VERSION`.
+ * - `rules`: An array of rule definitions, where each rule is an object containing:
+ *   - `id`: A non-empty string that uniquely identifies the rule.
+ *   - `type`: A non-empty string indicating the type of the rule.
+ *   - `description`: An optional non-empty string providing a description of the rule.
+ *   - `parameters`: An optional property that can hold any value (unknown) for additional rule parameters.
+ *
+ * The schema also enforces strict validation, refusing any unknown properties in the configuration object. Additionally, it includes a custom refinement to ensure that all rule IDs are unique within the configuration.
+ *
+ * @throws {ZodError} Throws a ZodError if the configuration does not conform to the schema, including duplicate rule IDs.  
  */
 export const shapitConfigSchema = z
   .object({

@@ -11,8 +11,9 @@ import { ErrorCodes } from '../errors/error-codes.js'
 /**
  * Loads and parses the Shapit configuration file from the specified path.
  *
- * @param path
- * @returns A promise that resolves to the parsed Shapit configuration.
+ * @param path - The file path to the Shapit configuration file.
+ * @returns A promise that resolves to the parsed Shapit configuration and any warnings encountered during loading.
+ * @throws {AppError} Throws an AppError if the configuration file is not found, contains invalid YAML, or does not conform to the expected schema.
  */
 export const loadConfig = async (path: string): Promise<LoadedConfig> => {
   let content: string

@@ -70,7 +70,7 @@ const observePath = async (path: string, cwd: string): Promise<PathObservation> 
 }
 
 /**
- * Enriches a path rule with file system observations.
+ * Enriches the structure input by observing the specified paths and determining their existence and types.
  *
  * Expands brace expressions into individual paths, resolves them relative
  * to the project's working directory, and inspects their existence and type.
@@ -78,10 +78,10 @@ const observePath = async (path: string, cwd: string): Promise<PathObservation> 
  * Observations are collected concurrently and preserve expansion order.
  * This enricher does not evaluate rule requirements.
  *
- * @param input - The path rule parameters.
- * @param context - The project context.
- * @returns The input enriched with observations for each expanded path.
- * @throws {AppError} If access to a path is denied.
+ * @param input - The structure input containing the path to observe.
+ * @param context - The project context providing necessary information for enrichment.
+ * @returns A promise that resolves to the enriched structure observed input.
+ * @throws {AppError} Throws an AppError if any path escapes the base directory or if access to a path is denied.
  */
 export const enrichStructureInput: Enricher<StructureInput, StructureObservedInput> = async (
   input,

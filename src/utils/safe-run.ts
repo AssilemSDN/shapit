@@ -18,6 +18,16 @@ export interface CommandError {
   details?: unknown
 }
 
+/**
+ * Wraps a command function to handle AppError exceptions and return a standardized CommandResult.
+ *
+ * Unexpected errors are rethrown.
+ *
+ * @template TOptions - The type of the options parameter for the command function.
+ * @template TData - The type of the data returned by the command function.
+ * @param fn - The command function to wrap, which takes options and returns a Promise of CommandResult.
+ * @returns A wrapped command returning a CommandResult.
+ */
 export function safeRun<TOptions, TData>(
   fn: (options: TOptions) => Promise<CommandResult<TData>>,
 ): (options: TOptions) => Promise<CommandResult<TData>> {

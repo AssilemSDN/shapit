@@ -11,6 +11,12 @@ export interface AuditProjectOptions {
   configFile: string
 }
 
+/**
+ * Audits a project based on the provided configuration file and project directory.
+ *
+ * @param options - The options for auditing the project, including the project directory and configuration file path.
+ * @returns A promise that resolves to an object containing the audit results, including success status, exit code, warnings, and detailed audit data.
+ */
 export const auditProject = safeRun(async ({ projectDir, configFile }: AuditProjectOptions) => {
   const cwd = resolve(projectDir)
   const configPath = resolve(cwd, configFile)

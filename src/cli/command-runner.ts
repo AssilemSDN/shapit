@@ -18,6 +18,11 @@ export type RunCommandOptions<TOptions, TData = unknown> = {
   renderData?: (data: TData) => void
 }
 
+/**
+ * Runs a command and renders its result to the console.
+ *
+ * @param options - The options for running the command.
+ */
 export async function runCommand<TOptions, TData = unknown>({
   commandName,
   commandFn,

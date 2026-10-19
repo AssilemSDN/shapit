@@ -21,4 +21,8 @@ export const ErrorCodes = {
   PATH_OUTSIDE_BASE_DIRECTORY: 'PATH_OUTSIDE_BASE_DIRECTORY',
 } as const
 
+/**
+ * Represents the set of error codes used throughout the application.
+ * Each error code corresponds to a specific type of error that can occur during execution.
+ */
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes]
