@@ -35,11 +35,9 @@ export function renderCommandResult<TData>({
         for (const message of formatErrorDetails(error.details)) {
           logger.error(` - ${message}`)
         }
-
         if (error.details !== undefined) {
           logger.debug('Details:', error.details)
         }
-
         logger.debug('Error code:', error.code)
       }
     } else {

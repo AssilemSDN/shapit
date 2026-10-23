@@ -31,6 +31,32 @@ rules:
       path: tests
       kind: directory
 
+  - id: forbidden-lockfiles
+    type: structure
+    description: Only Yarn lockfiles are allowed
+    parameters:
+      path: '{package-lock.json,npm-shrinkwrap.json,pnpm-lock.yaml,pnpm-lock.yml,bun.lock,bun.lockb}'
+      kind: file
+      must: not_exist
+  - id: yarn-lockfile
+    type: structure
+    description: Yarn lockfile must exist
+    parameters:
+      path: yarn.lock
+      kind: file
+      must: exist
+
+  - id: package-files
+    type: structure
+    source:
+      type: json
+      file: package.json
+      select: '$.files[*]'
+      as: publishedPath
+    parameters:
+      path: '{{ publishedPath }}'
+      must: exist
+
   - id: package-entrypoint
     type: structure
     source:
@@ -43,13 +69,13 @@ rules:
       kind: file
       must: exist
 
-  - id: package-files
+  - id: package-types
     type: structure
     source:
       type: json
       file: package.json
-      select: '$.files[*]'
-      as: file
+      select: '$.types'
+      as: declarations
     parameters:
-      path: '{{ file }}'
-      must: exist
+      path: '{{ declarations }}'
+      kind: file

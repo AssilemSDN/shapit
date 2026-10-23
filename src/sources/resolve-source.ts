@@ -16,7 +16,6 @@ export async function resolveSource(
 
   let pending = cache.get(key)
   if (!pending) {
-    console.log('load source')
     pending = loader.read(source, baseDir)
     cache.set(key, pending)
   }
