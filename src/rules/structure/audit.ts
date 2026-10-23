@@ -25,7 +25,10 @@ export const auditStructure = (input: StructureObservedInput): RuleResult => {
         message: `Unexpected path${existing.length > 1 ? 's' : ''} found: ${paths}`,
       }
     }
-    return { valid: true }
+    return {
+      valid: true,
+      message: `Expected paths are absent: ${expectedPaths}`,
+    }
   }
 
   const matching = observations.filter(
@@ -33,7 +36,12 @@ export const auditStructure = (input: StructureObservedInput): RuleResult => {
   )
 
   if (matching.length > 0) {
-    return { valid: true }
+    const label = kind === 'any' ? 'path' : kind
+    const paths = matching.map(({ path }) => `"${path}"`).join(', ')
+    return {
+      valid: true,
+      message: `Matching ${label} found: ${paths}`,
+    }
   }
   if (existing.length > 0) {
     return {

@@ -2,7 +2,8 @@ import type { AuditResult } from '../../core/types.js'
 import { logger } from '../../utils/logger.js'
 
 /**
- * Represents the summary of an audit report, including the total number of rules audited, the number of passed and failed rules, and the detailed results of each rule.
+ * Represents the summary of an audit report, including the total number
+ * of audited instances, passed and failed instances, and their results.
  */
 export interface AuditReport {
   total: number
@@ -12,9 +13,9 @@ export interface AuditReport {
 }
 
 /**
- * Renders the audit results to the console, providing a summary of the audit including the number of passed and failed rules, as well as detailed messages for each rule.
+ * Renders audit results to the console, grouping dynamic rule instances.
  *
- * @param report - The audit report containing the results of the audit
+ * @param report - The audit report containing the results.
  */
 export function renderAuditResult(report: AuditReport): void {
   const groups = new Map<string, AuditResult[]>()
@@ -27,21 +28,25 @@ export function renderAuditResult(report: AuditReport): void {
 
   for (const [ruleId, group] of groups) {
     const isDynamic = group.length > 1 || group[0]?.id !== ruleId
+
     if (isDynamic) {
-      logger.info(`${ruleId} (${group.length} instances)`)
+      const label = group.length === 1 ? 'instance' : 'instances'
+      logger.info(`${ruleId} (${group.length} ${label})`)
     }
 
     for (const result of group) {
-      const prefix = isDynamic ? '  ' : ''
+      const id = isDynamic ? result.id.slice(ruleId.length) : result.id
+      const message = result.message ?? (result.valid ? 'Rule passed' : 'Rule failed')
+      const options = { indent: isDynamic ? 2 : 0 }
+
       if (result.valid) {
-        logger.success(`${prefix}${result.id}: Rule passed`)
+        logger.success(`${id}: ${message}`, options)
       } else {
-        logger.error(
-          `${prefix}${result.id}: ${result.message ?? result.description ?? 'Rule failed'}`,
-        )
+        logger.error(`${id}: ${message}`, options)
       }
     }
   }
+
   logger.info(
     `Audit summary: ${report.passed} passed, ${report.failed} failed (${report.total} total).`,
   )
