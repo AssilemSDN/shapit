@@ -8,7 +8,7 @@ import type { JsonSource } from './schema.js'
  * Loads and extracts values from a JSON file using JSONPath.
  */
 export const jsonSourceLoader: SourceLoader<JsonSource> = {
-  key: (config, baseDir) => `json:${(resolvePathInside(baseDir, config.file), 'utf-8')}`,
+  key: (config, baseDir) => `json:${resolvePathInside(baseDir, config.file)}`,
 
   async read(config, baseDir) {
     const filePath = resolvePathInside(baseDir, config.file)
