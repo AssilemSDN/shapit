@@ -37,8 +37,25 @@ rules:
       path: tests
       kind: directory
 
-  - id: cli-entry
+  - id: package-entrypoint
     type: structure
+    source:
+      type: json
+      file: package.json
+      select: '$.main'
+      as: entrypoint
     parameters:
-      path: bin/shapit.js
+      path: '{{ entrypoint }}'
       kind: file
+      must: exist
+
+  - id: package-files
+    type: structure
+    source:
+      type: json
+      file: package.json
+      select: '$.files[*]'
+      as: file
+    parameters:
+      path: '{{ file }}'
+      must: exist

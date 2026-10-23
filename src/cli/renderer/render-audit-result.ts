@@ -17,12 +17,30 @@ export interface AuditReport {
  * @param report - The audit report containing the results of the audit
  */
 export function renderAuditResult(report: AuditReport): void {
+  const groups = new Map<string, AuditResult[]>()
+
   for (const result of report.results) {
-    if (result.valid) {
-      logger.success(`${result.id}: Rule passed`)
-      continue
+    const group = groups.get(result.ruleId) ?? []
+    group.push(result)
+    groups.set(result.ruleId, group)
+  }
+
+  for (const [ruleId, group] of groups) {
+    const isDynamic = group.length > 1 || group[0]?.id !== ruleId
+    if (isDynamic) {
+      logger.info(`${ruleId} (${group.length} instances)`)
     }
-    logger.error(`${result.id}: ${result.message ?? result.description ?? 'Rule failed'}`)
+
+    for (const result of group) {
+      const prefix = isDynamic ? '  ' : ''
+      if (result.valid) {
+        logger.success(`${prefix}${result.id}: Rule passed`)
+      } else {
+        logger.error(
+          `${prefix}${result.id}: ${result.message ?? result.description ?? 'Rule failed'}`,
+        )
+      }
+    }
   }
   logger.info(
     `Audit summary: ${report.passed} passed, ${report.failed} failed (${report.total} total).`,
