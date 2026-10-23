@@ -6,5 +6,7 @@ export interface SourceLoader<T = unknown> {
    * @param baseDir The base directory to resolve relative paths from.
    * @returns A promise that resolves to an array of the loaded data.
    */
-  load(config: T, baseDir: string): Promise<unknown[]>
+  key(config: T, baseDir: string): string
+  read(config: T, baseDir: string): Promise<unknown[]>
+  select(data: unknown, config: T): unknown[]
 }

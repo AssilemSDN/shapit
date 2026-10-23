@@ -7,12 +7,6 @@ rules:
       path: package.json
       kind: file
 
-  - id: readme
-    type: structure
-    parameters:
-      path: README.md
-      kind: file
-
   - id: license
     type: structure
     parameters:

@@ -2,7 +2,7 @@ import type { RuleDefinition, ShapitConfig } from '../config/types.js'
 import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 import { ruleRegistry } from '../rules/registry.js'
-import { resolveSource } from '../sources/resolve-source.js'
+import { resolveSource, type SourceCache } from '../sources/resolve-source.js'
 import { interpolate } from './interpolate.js'
 import type { AuditResult, ProjectContext } from './types.js'
 
@@ -20,7 +20,11 @@ interface RuleInstance {
  * @returns the resolved rule instances
  * @throws {AppError} Throws an AppError if an error occurs during the instance building process
  */
-const buildInstances = async (definition: RuleDefinition, cwd: string): Promise<RuleInstance[]> => {
+const buildInstances = async (
+  definition: RuleDefinition,
+  cwd: string,
+  sourceCache: SourceCache,
+): Promise<RuleInstance[]> => {
   const { id, type, source, parameters } = definition
   // A single instance is created if no source is provided
   if (!source) {
@@ -36,7 +40,7 @@ const buildInstances = async (definition: RuleDefinition, cwd: string): Promise<
   const details = { ruleId: id, ruleType: type }
 
   try {
-    const contexts = await resolveSource(source, cwd)
+    const contexts = await resolveSource(source, cwd, sourceCache)
 
     if (contexts.length === 0) {
       throw new AppError(`No contexts resolved for rule "${id}"`, {
@@ -89,6 +93,7 @@ export const audit = async (
 ): Promise<AuditResult[]> => {
   // Initialize an array to hold the results of the audit
   const results: AuditResult[] = []
+  const sourceCache: SourceCache = new Map()
 
   // Iterate over each rule definition in the configuration
   for (const definition of config.rules) {
@@ -104,7 +109,7 @@ export const audit = async (
       })
     }
 
-    const instances = await buildInstances(definition, context.cwd)
+    const instances = await buildInstances(definition, context.cwd, sourceCache)
 
     for (const instance of instances) {
       try {
