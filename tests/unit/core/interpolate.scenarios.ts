@@ -62,4 +62,24 @@ export const invalidInterpolateScenarios = [
     },
     expected: 'Unknown variable: missing',
   },
+  {
+    name: 'should reject proto access',
+    content: {
+      value: '{{ source.__proto__ }}',
+      variables: {},
+    },
+    expected: 'Unknown variable: source.__proto__',
+  },
+  {
+    name: 'should reject object embedding',
+    content: {
+      value: '{{ file }}.ts',
+      variables: {
+        file: {
+          name: 'index',
+        },
+      },
+    },
+    expected: 'Cannot embed object: file',
+  },
 ] satisfies InterpolateScenario[]
