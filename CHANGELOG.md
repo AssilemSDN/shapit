@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/AssilemSDN/shapit/compare/v0.1.0...v0.1.1) (2026-10-24)
+
+
+### Bug Fixes
+
+* **deps:** update lockfile to resolve security vulnerability ([#25](https://github.com/AssilemSDN/shapit/issues/25)) ([c37b21d](https://github.com/AssilemSDN/shapit/commit/c37b21d71055155e6435af649ec0f5387f9281a9))
+
 ## [0.1.0](https://github.com/AssilemSDN/shapit/compare/shapit-v0.0.1...shapit-v0.1.0) (2026-10-19)
 
 
