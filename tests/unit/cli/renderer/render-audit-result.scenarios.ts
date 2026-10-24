@@ -20,6 +20,7 @@ export const renderAuditResultScenarios = [
       results: [
         {
           id: 'readme',
+          ruleId: 'readme',
           type: 'structure',
           valid: true,
         },
@@ -40,6 +41,7 @@ export const renderAuditResultScenarios = [
       results: [
         {
           id: 'readme',
+          ruleId: 'readme',
           type: 'structure',
           valid: false,
         },

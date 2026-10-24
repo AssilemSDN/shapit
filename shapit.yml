@@ -7,12 +7,6 @@ rules:
       path: package.json
       kind: file
 
-  - id: readme
-    type: structure
-    parameters:
-      path: README.md
-      kind: file
-
   - id: license
     type: structure
     parameters:
@@ -37,8 +31,51 @@ rules:
       path: tests
       kind: directory
 
-  - id: cli-entry
+  - id: forbidden-lockfiles
     type: structure
+    description: Only Yarn lockfiles are allowed
     parameters:
-      path: bin/shapit.js
+      path: '{package-lock.json,npm-shrinkwrap.json,pnpm-lock.yaml,pnpm-lock.yml,bun.lock,bun.lockb}'
+      kind: file
+      must: not_exist
+  - id: yarn-lockfile
+    type: structure
+    description: Yarn lockfile must exist
+    parameters:
+      path: yarn.lock
+      kind: file
+      must: exist
+
+  - id: package-files
+    type: structure
+    source:
+      type: json
+      file: package.json
+      select: '$.files[*]'
+      as: publishedPath
+    parameters:
+      path: '{{ publishedPath }}'
+      must: exist
+
+  - id: package-entrypoint
+    type: structure
+    source:
+      type: json
+      file: package.json
+      select: '$.main'
+      as: entrypoint
+    parameters:
+      path: '{{ entrypoint }}'
+      kind: file
+      must: exist
+
+  - id: package-types
+    type: structure
+    source:
+      type: json
+      file: package.json
+      select: '$.types'
+      as: declarations
+    parameters:
+      path: '{{ declarations }}'
       kind: file
