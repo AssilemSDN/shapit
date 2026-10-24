@@ -27,7 +27,9 @@ export function interpolate(value: unknown, variables: Record<string, unknown>):
     }
     return value.replace(PLACEHOLDER, (_, path: string) => {
       const resolved = lookup(path, variables)
-      if (typeof resolved === 'object') throw new Error(`Cannot embed object: ${path}`)
+      if (typeof resolved === 'object') {
+        throw new Error(`Cannot embed object: ${path}`)
+      }
       return String(resolved)
     })
   }

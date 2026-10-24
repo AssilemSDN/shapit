@@ -1,3 +1,12 @@
+interface InterpolateScenario {
+  name: string
+  content: {
+    value: unknown
+    variables: Record<string, unknown>
+  }
+  expected: unknown
+}
+
 export const interpolateScenarios = [
   {
     name: 'should interpolate a string',
@@ -42,4 +51,15 @@ export const interpolateScenarios = [
     },
     expected: 'dist/index.js',
   },
-]
+] satisfies InterpolateScenario[]
+
+export const invalidInterpolateScenarios = [
+  {
+    name: 'should reject unknown variables',
+    content: {
+      value: '{{ missing }}',
+      variables: {},
+    },
+    expected: 'Unknown variable: missing',
+  },
+] satisfies InterpolateScenario[]
