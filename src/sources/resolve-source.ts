@@ -19,7 +19,13 @@ export async function resolveSource(
     pending = loader.read(source, baseDir)
     cache.set(key, pending)
   }
-
-  const data = await pending
+  let data: unknown
+  try {
+    data = await pending
+  } catch (error) {
+    // A failed read must not be in the cache
+    if (cache.get(key) === pending) cache.delete(key)
+    throw error
+  }
   return loader.select(data, source).map((values) => ({ [alias]: values }))
 }
