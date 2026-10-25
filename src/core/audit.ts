@@ -28,13 +28,7 @@ const buildInstances = async (
   const { id, type, source, parameters } = definition
   // A single instance is created if no source is provided
   if (!source) {
-    return [
-      {
-        id,
-        ruleId: id,
-        parameters: parameters,
-      },
-    ]
+    return [{ id, ruleId: id, parameters }]
   }
   // If a source is provided, resolve it and create an instance for each set of variables
   const details = { ruleId: id, ruleType: type }
@@ -122,24 +116,31 @@ export const audit = async (
           description: definition.description,
         })
       } catch (error) {
-        if (error instanceof AppError && error.code === ErrorCodes.INVALID_RULE_CONFIG) {
-          throw new AppError(`Invalid rule parameters for "${instance.id}"`, {
-            code: error.code,
-            details: {
-              ruleId: definition.id,
-              ruleType: definition.type,
-              ...(typeof error.details === 'object' && error.details !== null ? error.details : {}),
-            },
-            cause: error,
-          })
+        if (error instanceof AppError) {
+          if (error.code === ErrorCodes.INVALID_RULE_CONFIG) {
+            throw new AppError(`Invalid rule parameters for "${instance.id}"`, {
+              code: error.code,
+              details: {
+                ruleId: definition.id,
+                instanceId: instance.id,
+                ruleType: definition.type,
+                ...(typeof error.details === 'object' && error.details !== null
+                  ? error.details
+                  : {}),
+              },
+              cause: error,
+            })
+          }
+          throw error
         }
-        throw new AppError(`Error executing rule "${definition.id}"`, {
+        throw new AppError(`Error executing rule "${instance.id}"`, {
           code: ErrorCodes.RULE_EXECUTION_ERROR,
           details: {
             ruleId: definition.id,
+            instanceId: instance.id,
             ruleType: definition.type,
-            error,
           },
+          cause: error,
         })
       }
     }
