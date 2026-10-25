@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { jsonSourceSchema } from './json/schema.js'
 import { jsonSourceLoader } from './json/loader.js'
 import type { SourceLoader } from './types.js'
