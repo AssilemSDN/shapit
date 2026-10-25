@@ -1,8 +1,28 @@
-const PLACEHOLDER = /{{\s*([\w.]+)\s*}}/g
-const EXACT = /^{{\s*([\w.]+)\s*}}$/
+/**
+ * Matches placeholders embedded in a string.
+ * - Valid: "Hello {{ user.name }}"
+ * - Invalid: "Hello {{ user..name }}"
+ */
+const PLACEHOLDER = /{{\s*([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)\s*}}/g
+/**
+ * Matches a standalone placeholder, preserving its value type.
+ * - Valid: "{{ user.name }}"
+ * - Invalid: "Hello {{ user.name }}"
+ */
+const EXACT = /^{{\s*([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)\s*}}$/
 
 const FORBIDDEN_KEYS = new Set(['__proto__', 'prototype', 'constructor'])
 
+type Scalar = string | number | boolean
+
+function isScalar(value: unknown): value is Scalar {
+  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+}
+
+/**
+ * Resolves a variable from a dot-separated path.
+ * @throws {Error} If the path is unknown or forbidden.
+ */
 function lookup(path: string, variables: unknown): unknown {
   let current = variables
   for (const key of path.split('.')) {
@@ -19,19 +39,31 @@ function lookup(path: string, variables: unknown): unknown {
   return current
 }
 
+/**
+ * Recursively interpolates placeholders, preserving scalar types for exact matches.
+ * @throws {Error} If a placeholder or its resolved value is invalid.
+ */
 export function interpolate(value: unknown, variables: Record<string, unknown>): unknown {
   if (typeof value === 'string') {
     const exact = EXACT.exec(value)
     if (exact) {
-      return lookup(exact[1]!, variables)
+      const resolved = lookup(exact[1]!, variables)
+      if (!isScalar(resolved)) {
+        throw new Error(`Invalid interpolation value: ${exact[1]}`)
+      }
+      return resolved
     }
-    return value.replace(PLACEHOLDER, (_, path: string) => {
+    const result = value.replace(PLACEHOLDER, (_, path: string) => {
       const resolved = lookup(path, variables)
-      if (typeof resolved === 'object') {
-        throw new Error(`Cannot embed object: ${path}`)
+      if (!isScalar(resolved)) {
+        throw new Error(`Cannot embed non-scalar value: ${path}`)
       }
       return String(resolved)
     })
+    if (result.includes('{{') || result.includes('}}')) {
+      throw new Error(`Invalid interpolation expression: ${value}`)
+    }
+    return result
   }
   if (Array.isArray(value)) {
     return value.map((item) => interpolate(item, variables))

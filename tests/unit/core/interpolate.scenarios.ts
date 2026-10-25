@@ -63,6 +63,16 @@ export const invalidInterpolateScenarios = [
     expected: 'Unknown variable: missing',
   },
   {
+    name: 'should reject malformed placeholder',
+    content: { value: '{{ source..name }}', variables: { source: 'file' } },
+    expected: 'Invalid interpolation expression',
+  },
+  {
+    name: 'should reject null variable',
+    content: { value: '{{ source }}', variables: { source: null } },
+    expected: 'Invalid interpolation value',
+  },
+  {
     name: 'should reject proto access',
     content: {
       value: '{{ source.__proto__ }}',
@@ -80,6 +90,6 @@ export const invalidInterpolateScenarios = [
         },
       },
     },
-    expected: 'Cannot embed object: file',
+    expected: 'Cannot embed non-scalar value: file',
   },
 ] satisfies InterpolateScenario[]
