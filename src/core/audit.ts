@@ -15,10 +15,11 @@ interface RuleInstance {
 /**
  * Turns a rule definition into one or more rule instances.
  *
- * @param definition the rule definition to build instances from
- * @param cwd the current working directory of the project
- * @returns the resolved rule instances
- * @throws {AppError} Throws an AppError if an error occurs during the instance building process
+ * @param definition The rule definition to build instances from.
+ * @param cwd The current working directory of the project.
+ * @param sourceCache The cache used to store resolved source data.
+ * @returns The resolved rule instances.
+ * @throws {AppError} If an error occurs during instance building.
  */
 const buildInstances = async (
   definition: RuleDefinition,

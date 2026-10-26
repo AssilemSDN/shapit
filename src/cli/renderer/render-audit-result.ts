@@ -36,7 +36,8 @@ export function renderAuditResult(report: AuditReport): void {
 
     for (const result of group) {
       const id = isDynamic ? result.id.slice(ruleId.length) : result.id
-      const message = result.message ?? (result.valid ? 'Rule passed' : 'Rule failed')
+      const message =
+        result.message ?? result.description ?? (result.valid ? 'Rule passed' : 'Rule failed')
       const options = { indent: isDynamic ? 2 : 0 }
 
       if (result.valid) {
