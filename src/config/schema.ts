@@ -32,7 +32,10 @@ export const shapitConfigSchema = z
       z
         .object({
           // The 'id' property is a non-empty string
-          id: z.string().min(1),
+          id: z
+            .string()
+            .min(1)
+            .regex(/^[^#]+$/, 'Rule ID must not contain "#"'),
           // The 'type' property is a non-empty string
           type: z.string().min(1),
           description: z.string().min(1).optional(),
