@@ -36,8 +36,8 @@ rules:
     description: Only Yarn lockfiles are allowed
     parameters:
       path: '{package-lock.json,npm-shrinkwrap.json,pnpm-lock.yaml,pnpm-lock.yml,bun.lock,bun.lockb}'
-      kind: file
       must: not_exist
+
   - id: yarn-lockfile
     type: structure
     description: Yarn lockfile must exist
