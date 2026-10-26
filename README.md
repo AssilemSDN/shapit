@@ -64,8 +64,9 @@ npm install --save-dev shapit
 
 Shapit currently provides:
 
-- **Declarative configuration** - Define project requirements using YAML;
+- **Declarative configuration** - Define project requirements using YAML
 - **Extensible rule system** - Support for dedicated rule types
+- **Dynamic rule** - Generate rule instances from external data sources
 - **CLI & API** - Run audits from the terminal or programmatically
 - **CI-ready** - Structured results and predictable exit codes
 
@@ -76,6 +77,33 @@ Shapit currently provides:
 | `structure` | Validate required and forbidden paths, file and directory types, and path alternatives. |
 
 > Additional rule types are planned for future releases.
+
+### Dynamic rule
+
+Shapit supports dynamic rules powered by external data sources.
+
+For example, you can validate files declared in `package.json` without explicitly listing them:
+
+```yaml
+version: 1
+
+rules:
+  - id: package-files
+    type: structure
+    source:
+      type: json
+      file: package.json
+      select: '$.files[*]'
+      as: file
+    parameters:
+      path: '{{ file }}'
+      kind: any
+      must: exist
+```
+
+Shapit generates a rule instance for each selected value and validates it independently.
+
+Learn more about [dynamic rules and JSON sources](./docs/usage.md).
 
 ## CLI
 
