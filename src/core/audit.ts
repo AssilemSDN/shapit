@@ -35,14 +35,6 @@ const buildInstances = async (
 
   try {
     const contexts = await resolveSource(source, cwd, sourceCache)
-
-    if (contexts.length === 0) {
-      throw new AppError(`No contexts resolved for rule "${id}"`, {
-        code: ErrorCodes.SOURCE_RESOLUTION_ERROR,
-        details,
-      })
-    }
-
     return contexts.map((variables, i): RuleInstance => {
       const resolved = interpolate(parameters, variables)
       if (resolved == null || typeof resolved !== 'object' || Array.isArray(resolved)) {
@@ -104,6 +96,17 @@ export const audit = async (
     }
 
     const instances = await buildInstances(definition, context.cwd, sourceCache)
+    if (instances.length === 0) {
+      results.push({
+        id: definition.id,
+        ruleId: definition.id,
+        type: definition.type,
+        description: definition.description,
+        valid: false,
+        message: 'Source resolved to no values',
+      })
+      continue
+    }
 
     for (const instance of instances) {
       try {

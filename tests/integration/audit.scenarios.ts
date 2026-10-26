@@ -138,7 +138,7 @@ rules:
     },
   },
   {
-    name: 'rejects an empty JSON source result',
+    name: 'fails audit when JSON source resolves to no values',
     contents: {
       'paths.json': JSON.stringify({ paths: [] }),
     },
@@ -155,9 +155,9 @@ rules:
       path: "{{ source }}"
 `,
     expected: {
-      exitCode: 2,
-      errorCode: 'SOURCE_RESOLUTION_ERROR',
-      errorMessage: 'No contexts resolved for rule "empty-source"',
+      exitCode: 1,
+      passed: 0,
+      failed: 1,
     },
   },
   {
