@@ -1,7 +1,7 @@
 <div align="center">
   <img
     src="https://raw.githubusercontent.com/AssilemSDN/shapit/main/docs/images/shapit.png"
-    alt="shapit banner"
+    alt="Shapit banner"
     width="900"
   />
 </div>
@@ -12,8 +12,8 @@
 
 [![CI](https://github.com/AssilemSDN/shapit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AssilemSDN/shapit/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/github/AssilemSDN/shapit/graph/badge.svg?token=IBG74CEDTK)](https://codecov.io/github/AssilemSDN/shapit)
+[![npm](https://img.shields.io/npm/v/@bloup/shapit)](https://www.npmjs.com/package/@bloup/shapit)
 ![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024%20%7C%2026-339933?logo=node.js&logoColor=white)
-![Yarn](https://img.shields.io/badge/Yarn-4.18.1-2C8EBB?logo=yarn&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 </div>
@@ -22,14 +22,12 @@
 
 > **Define your project's rules. Let Shapit check them.**
 
-**Shapit** is a lightweight, declarative CLI for auditing projects against configurable rules.
+**Shapit** is a lightweight, declarative CLI for auditing projects against configurable standards.
 
-Define your project conventions in a YAML file, run an audit, and get clear feedback on whether your project meets your standards.
-
-Built around an extensible rule system, Shapit is designed to validate differents aspects of a project through dedicated rule types.
+Define your project conventions in YAML, run an audit, and get clear feedback on whether your project meets its requirements.
 
 > [!WARNING]
-> Shapit is under active development. Its configuration format and public API may change before a stable release.
+> Shapit is under active development. Its configuration format and public API may change before v1.0.0.
 
 ## Quick start
 
@@ -46,92 +44,86 @@ rules:
       kind: file
 ```
 
-Then run Shapit directly with npx:
+Run Shapit without adding it to your project dependencies:
+
+```bash
+npx @bloup/shapit audit
+```
+
+Or install it locally as a development dependency:
+
+```bash
+npm install -D @bloup/shapit
+```
+
+Then run the installed CLI:
 
 ```bash
 npx shapit audit
 ```
 
-Or install it as a development dependency:
-
-```bash
-npm install --save-dev shapit
-```
-
-> Shapit evaluates the configured rules and reports whether your project satisfies them.
+Shapit evaluates your project against the configured rules and reports the results.
 
 ## Features
 
-Shapit currently provides:
-
-- **Declarative configuration** - Define project requirements using YAML;
-- **Extensible rule system** - Support for dedicated rule types
-- **CLI & API** - Run audits from the terminal or programmatically
-- **CI-ready** - Structured results and predictable exit codes
-
-### Available rule types
-
-|        Type | Description                                                                             |
-| ----------: | --------------------------------------------------------------------------------------- |
-| `structure` | Validate required and forbidden paths, file and directory types, and path alternatives. |
-
-> Additional rule types are planned for future releases.
+- **Declarative configuration** — Define project standards in YAML.
+- **Structure validation** — Check required and forbidden files, directories and path alternatives.
+- **Extensible rule system** — Built to support additional rule types.
+- **CLI & API** — Run audits from the terminal or programmatically.
+- **CI-ready** — Predictable exit codes for automated checks.
 
 ## CLI
 
 ```text
-npx shapit audit [project-dir] [options]
+shapit audit [project-dir] [options]
 ```
 
-Common examples:
+With Shapit installed locally:
 
 ```bash
-# Audit the current directory using shapit.yml
+# Audit the current directory
 npx shapit audit
 
 # Audit another project
 npx shapit audit ../my-project
 
-# Use another configuration file
+# Use a custom configuration
 npx shapit audit --config config/shapit.yml
 
-# Enable debug output
+# Enable debug logging
 npx shapit --debug audit
 ```
 
-Configuration files can be located outside the audited project. Rule paths are resolved relative to the audited project's root directory.
+Without a local installation, use `npx @bloup/shapit` instead.
 
-For detailed usage and options, see the [documentation](https://github.com/AssilemSDN/shapit/blob/main/docs/usage.md)
+For detailed options, see the [CLI documentation](https://github.com/AssilemSDN/shapit/blob/main/docs/usage.md).
 
 ## Programmatic API
 
 Shapit can also be used programmatically:
 
 ```ts
-import { audit, loadConfig } from 'shapit'
+import { audit, loadConfig } from '@bloup/shapit'
 
 const { config, warnings } = await loadConfig('./shapit.yml')
-
-const results = await audit(config, {
-  cwd: process.cwd(),
-})
+const results = await audit(config, { cwd: process.cwd() })
 ```
 
-The API provides structured audit results and configuration warnings without relying on CLI output.
+The API returns structured audit results and configuration warnings without relying on CLI output.
 
 ## Exit codes
 
-| Code | Meaning                         |
-| ---: | ------------------------------- |
-|  `0` | Audit passed                    |
-|  `1` | Audit completed with violations |
-|  `2` | Execution error                 |
+| Code | Meaning                          |
+| ---- | -------------------------------- |
+| `0`  | All rules passed                 |
+| `1`  | One or more rules failed         |
+| `2`  | Configuration or execution error |
 
 ## Requirements
 
-- Node.js `>= 22.12.0`
-- Yarn `4.x` for repository development
+- Node.js >= 22.12.0
+- Yarn 4.x for repository development
 
 ## License
 
-MIT
+[MIT](./LICENSE)
