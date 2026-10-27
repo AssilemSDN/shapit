@@ -50,7 +50,7 @@ rules:
     type: structure
     source:
       type: json
-      file: toto.json
+      file: package.json
       select: '$.files[*]'
       as: publishedPath
     parameters:
