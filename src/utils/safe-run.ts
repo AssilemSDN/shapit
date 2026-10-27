@@ -16,6 +16,7 @@ export interface CommandError {
   message: string
   code: string
   details?: unknown
+  cause?: string
 }
 
 /**
@@ -45,7 +46,8 @@ export function safeRun<TOptions, TData>(
               message: error.message,
               code: error.code,
               details: error.details,
-            },
+              cause: error.cause instanceof Error ? error.cause.message : undefined,
+            }
           ],
         }
       }

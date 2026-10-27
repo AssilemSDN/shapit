@@ -38,6 +38,9 @@ export function renderCommandResult<TData>({
         if (error.details !== undefined) {
           logger.debug('Details:', error.details)
         }
+        if (error.cause !== undefined) {
+          logger.debug(`Caused by: ${error.cause}`)
+        }
         logger.debug('Error code:', error.code)
       }
     } else {
