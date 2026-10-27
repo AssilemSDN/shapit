@@ -50,7 +50,7 @@ const observePath = async (path: string, cwd: string): Promise<PathObservation> 
       throw error
     }
 
-    if (error.code === 'ENOENT') {
+    if (error.code === 'ENOENT' || error.code === 'ENOTDIR') {
       return {
         path,
         exists: false,
