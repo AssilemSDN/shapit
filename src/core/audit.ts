@@ -128,9 +128,7 @@ export const audit = async (
                 ruleId: definition.id,
                 instanceId: instance.id,
                 ruleType: definition.type,
-                ...(typeof error.details === 'object' && error.details !== null
-                  ? error.details
-                  : {}),
+                issues: error.details,
               },
               cause: error,
             })
