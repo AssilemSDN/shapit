@@ -118,18 +118,18 @@ export const auditScenarios = [
     },
     files: ['README.md', 'package.json', 'LICENSE'],
     config: `
-version: 1
-rules:
-  - id: json-files
-    type: structure
-    source:
-      type: json
-      file: paths.json
-      select: $.paths[*]
-    parameters:
-      path: "{{ source }}"
-      kind: file
-`,
+      version: 1
+      rules:
+        - id: json-files
+          type: structure
+          source:
+            type: json
+            file: paths.json
+            select: $.paths[*]
+          parameters:
+            path: "{{ source }}"
+            kind: file
+      `,
     expected: {
       exitCode: 0,
       passed: 3,
@@ -143,17 +143,17 @@ rules:
       'paths.json': JSON.stringify({ paths: [] }),
     },
     config: `
-version: 1
-rules:
-  - id: empty-source
-    type: structure
-    source:
-      type: json
-      file: paths.json
-      select: $.paths[*]
-    parameters:
-      path: "{{ source }}"
-`,
+      version: 1
+      rules:
+        - id: empty-source
+          type: structure
+          source:
+            type: json
+            file: paths.json
+            select: $.paths[*]
+          parameters:
+            path: "{{ source }}"
+      `,
     expected: {
       exitCode: 1,
       passed: 0,
@@ -163,17 +163,17 @@ rules:
   {
     name: 'rejects a missing JSON source file',
     config: `
-version: 1
-rules:
-  - id: missing-source
-    type: structure
-    source:
-      type: json
-      file: missing.json
-      select: $.entry
-    parameters:
-      path: "{{ source }}"
-`,
+      version: 1
+      rules:
+        - id: missing-source
+          type: structure
+          source:
+            type: json
+            file: missing.json
+            select: $.entry
+          parameters:
+            path: "{{ source }}"
+      `,
     expected: {
       exitCode: 2,
       errorCode: 'SOURCE_RESOLUTION_ERROR',
@@ -188,27 +188,27 @@ rules:
     },
     files: ['README.md', 'LICENSE'],
     config: `
-version: 1
-rules:
-  - id: json-files-a
-    type: structure
-    source:
-      type: json
-      file: paths.json
-      select: $.paths[*]
-    parameters:
-      path: "{{ source }}"
-      kind: file
-  - id: json-files-b
-    type: structure
-    source:
-      type: json
-      file: paths.json
-      select: $.paths[*]
-    parameters:
-      path: "{{ source }}"
-      kind: file
-`,
+      version: 1
+      rules:
+        - id: json-files-a
+          type: structure
+          source:
+            type: json
+            file: paths.json
+            select: $.paths[*]
+          parameters:
+            path: "{{ source }}"
+            kind: file
+        - id: json-files-b
+          type: structure
+          source:
+            type: json
+            file: paths.json
+            select: $.paths[*]
+          parameters:
+            path: "{{ source }}"
+            kind: file
+      `,
     expected: {
       exitCode: 0,
       passed: 4,

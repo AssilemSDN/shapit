@@ -15,13 +15,18 @@ Unknown properties are rejected.
 
 ## Selection
 
-Each selected value must be a string, number or boolean.
+Each selected value creates a separate rule instance.
 
-| Expression    | Selects              |
-| ------------- | -------------------- |
-| `$.main`      | The `main` field     |
-| `$.files[*]`  | Each item in `files` |
-| `$.scripts.*` | Each script value    |
+Selected values can be scalars, objects, or arrays. However, interpolation only supports scalar values (`string`, `number`, or `boolean`).
+
+For objects, individual properties can be accessed using dot notation (e.g., `{{ source.name }}`).
+
+| Expression      | Selects              |
+| --------------- | -------------------- |
+| `$.main`        | The `main` field     |
+| `$.files[*]`    | Each item in `files` |
+| `$.scripts.*`   | Each script value    |
+| `$.packages[*]` | Each package object  |
 
 See [jsonpathly](https://www.npmjs.com/package/jsonpathly) for supported syntax.
 
