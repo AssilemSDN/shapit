@@ -90,6 +90,44 @@ export const structureEnricherScenarios = [
       ],
     },
   },
+  {
+    name: 'observes missing path when parent is a file (must exist)',
+    filesystem: {
+      files: ['README.md'],
+    },
+    input: {
+      path: 'README.md/child',
+      kind: 'file',
+      must: 'exist',
+    },
+    expected: {
+      observations: [
+        {
+          path: 'README.md/child',
+          exists: false,
+        },
+      ],
+    },
+  },
+  {
+    name: 'observes missing path when parent is a file (must not exist)',
+    filesystem: {
+      files: ['README.md'],
+    },
+    input: {
+      path: 'README.md/child',
+      kind: 'directory',
+      must: 'not_exist',
+    },
+    expected: {
+      observations: [
+        {
+          path: 'README.md/child',
+          exists: false,
+        },
+      ],
+    },
+  },
 
   // Brace expansion
   {

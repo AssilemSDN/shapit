@@ -18,8 +18,8 @@ export interface SourceLoader<T = unknown> {
   /**
    * Selects values from the loaded data.
    *
-   * @param data
-   * @param baseDir The base directory to resolve relative paths from.
+   * @param data The loaded source data.
+   * @param config The source configuration.
    */
   select(data: unknown, config: T): unknown[]
 }

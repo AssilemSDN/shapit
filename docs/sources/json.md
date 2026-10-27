@@ -30,9 +30,6 @@ For objects, individual properties can be accessed using dot notation (e.g., `{{
 
 See [jsonpathly](https://www.npmjs.com/package/jsonpathly) for supported syntax.
 
-> [!NOTE]
-> Arrays and objects cannot be selected as individual values. Use `[*]` to select their elements.
-
 ## Examples
 
 ### Check published files

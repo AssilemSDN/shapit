@@ -47,7 +47,7 @@ export function safeRun<TOptions, TData>(
               code: error.code,
               details: error.details,
               cause: error.cause instanceof Error ? error.cause.message : undefined,
-            }
+            },
           ],
         }
       }
