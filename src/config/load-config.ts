@@ -35,9 +35,11 @@ export const loadConfig = async (path: string): Promise<LoadedConfig> => {
   try {
     rawConfig = YAML.parse(content)
   } catch (err: unknown) {
-    throw new AppError(`Invalid YAML in configuration file "${path}"`, {
+    const message = err instanceof Error ? `: ${err.message}` : ''
+
+    throw new AppError(`Invalid YAML in configuration file "${path}"${message}`, {
       code: ErrorCodes.INVALID_YAML,
-      details: err,
+      cause: err,
     })
   }
 
