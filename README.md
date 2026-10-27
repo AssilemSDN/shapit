@@ -129,4 +129,4 @@ For detailed usage, see the [CLI documentation](https://github.com/AssilemSDN/sh
 ## Documentation
 
 - [Usage & CLI](https://github.com/AssilemSDN/shapit/blob/main/docs/usage.md)
-- [Configuration](https://github.com/Assilem
+- [Configuration](https://github.com/Assilem)
