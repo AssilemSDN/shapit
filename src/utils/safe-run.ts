@@ -2,7 +2,7 @@
   PATH /src/utils/safe-run.ts
 */
 import { ExitCodes, type ExitCode } from './exit-codes.js'
-import { AppError } from '../errors/AppError.js'
+import { AppError } from '../errors/app-error.js'
 
 export interface CommandResult<T = unknown> {
   success: boolean

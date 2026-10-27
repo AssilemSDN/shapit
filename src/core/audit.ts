@@ -1,5 +1,5 @@
 import type { RuleDefinition, ShapitConfig } from '../config/types.js'
-import { AppError } from '../errors/AppError.js'
+import { AppError } from '../errors/app-error.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 import { ruleRegistry } from '../rules/registry.js'
 import { resolveSource, type SourceCache } from '../sources/resolve-source.js'

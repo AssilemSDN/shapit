@@ -1,7 +1,7 @@
 export { loadConfig } from './config/load-config.js'
 export { audit } from './core/audit.js'
 
-export { AppError } from './errors/AppError.js'
+export { AppError } from './errors/app-error.js'
 export { ErrorCodes } from './errors/error-codes.js'
 
 export type { ErrorCode } from './errors/error-codes.js'

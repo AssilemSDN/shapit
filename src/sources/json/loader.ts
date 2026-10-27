@@ -3,7 +3,7 @@ import { query } from 'jsonpathly'
 import { resolvePathInside } from '../../utils/resolve-project-path.js'
 import type { SourceLoader } from '../types.js'
 import type { JsonSource } from './schema.js'
-import { AppError } from '../../errors/AppError.js'
+import { AppError } from '../../errors/app-error.js'
 import { ErrorCodes } from '../../errors/error-codes.js'
 
 /**
