@@ -5,21 +5,13 @@ import { ExitCodes } from '../utils/exit-codes.js'
 import { safeRun } from '../utils/safe-run.js'
 import { AppError } from '../errors/app-error.js'
 import { ErrorCodes } from '../errors/error-codes.js'
+import { minimalTemplate } from '../templates/minimal.js'
 
 export interface InitProjectOptions {
   projectDir: string
 }
 
-const DEFAULT_CONFIG = `
-version: 1
-
-rules:
-  - id: readme
-    type: structure
-    parameters:
-      path: README.{md,txt}
-      kind: file
-`
+const DEFAULT_CONFIG = minimalTemplate
 
 /**
  * Creates a starter Shapit configuration without overwriting existing files.
