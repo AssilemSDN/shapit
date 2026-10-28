@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { ErrorCodes } from '../errors/error-codes.js'
+import { sourceConfigSchema } from '../sources/registry.js'
 
 export const LATEST_CONFIG_VERSION = 1
 export const DEFAULT_CONFIG_VERSION = 1
@@ -31,10 +32,14 @@ export const shapitConfigSchema = z
       z
         .object({
           // The 'id' property is a non-empty string
-          id: z.string().min(1),
+          id: z
+            .string()
+            .min(1)
+            .regex(/^[^#]+$/, 'Rule ID must not contain "#"'),
           // The 'type' property is a non-empty string
           type: z.string().min(1),
           description: z.string().min(1).optional(),
+          source: sourceConfigSchema.optional(),
           // The 'parameters' property can be any value (unknown)
           parameters: z.unknown().optional(),
         })

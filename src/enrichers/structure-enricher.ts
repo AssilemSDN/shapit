@@ -8,7 +8,7 @@ import type {
   StructureObservedInput,
 } from '../rules/structure/types.js'
 import type { Enricher } from './types.js'
-import { AppError } from '../errors/AppError.js'
+import { AppError } from '../errors/app-error.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 import { resolvePathInside } from '../utils/resolve-project-path.js'
 
@@ -50,7 +50,7 @@ const observePath = async (path: string, cwd: string): Promise<PathObservation> 
       throw error
     }
 
-    if (error.code === 'ENOENT') {
+    if (error.code === 'ENOENT' || error.code === 'ENOTDIR') {
       return {
         path,
         exists: false,

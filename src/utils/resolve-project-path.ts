@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { AppError } from '../errors/AppError.js'
+import { AppError } from '../errors/app-error.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 
 /**

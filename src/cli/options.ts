@@ -24,8 +24,6 @@ export function applyGlobalOptions(program: Command): void {
     logger.level = 'debug'
   } else if (options.quiet) {
     logger.level = 'error'
-  } else {
-    logger.level = 'info'
   }
 
   logger.debug('Logger level:', logger.level)

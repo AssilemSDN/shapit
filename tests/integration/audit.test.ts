@@ -7,13 +7,17 @@ import { auditProject } from '../../src/commands/audit-project.js'
 import { auditScenarios } from './audit.scenarios.js'
 
 describe('auditProject integration', () => {
-  it.each(auditScenarios)('$name', async ({ files, config, expected }) => {
+  it.each(auditScenarios)('$name', async ({ files, contents, config, expected }) => {
     const cwd = await mkdtemp(join(tmpdir(), 'shapit-'))
 
     try {
       // Prepare project
       for (const file of files ?? []) {
         await writeFile(join(cwd, file), '')
+      }
+
+      for (const [file, content] of Object.entries(contents ?? {})) {
+        await writeFile(join(cwd, file), content)
       }
 
       await writeFile(join(cwd, 'shapit.yml'), config)
@@ -27,7 +31,6 @@ describe('auditProject integration', () => {
       // Assert exit code
       expect(result.exitCode).toBe(expected.exitCode)
       expect(result.success).toBe(expected.exitCode === 0)
-
       if (expected.exitCode === 2) {
         // Application error
         expect(result.data).toBeUndefined()
@@ -45,6 +48,9 @@ describe('auditProject integration', () => {
           failed: expected.failed,
         })
         expect(result.data?.results).toHaveLength(expected.passed! + expected.failed!)
+        if (expected.resultIds) {
+          expect(result.data?.results.map(({ id }) => id)).toEqual(expected.resultIds)
+        }
       }
       expect(result.warnings).toEqual('warnings' in expected ? expected.warnings : [])
     } finally {

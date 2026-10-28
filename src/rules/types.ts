@@ -3,7 +3,7 @@ import type { ZodType } from 'zod'
 import type { Enricher } from '../enrichers/types.js'
 import type { ProjectContext, RuleResult } from '../core/types.js'
 
-import { AppError } from '../errors/AppError.js'
+import { AppError } from '../errors/app-error.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
