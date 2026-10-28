@@ -24,6 +24,7 @@ export function registerCommands(program: Command): void {
           configFileName: options.config,
         },
         renderData: renderInitResult,
+        showCompletionMessage: false,
       })
     })
   program
