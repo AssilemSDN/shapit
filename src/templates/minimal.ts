@@ -1,7 +1,8 @@
 /**
  * Minimal Shapit configuration template.
  */
-export const minimalTemplate = `version: 1
+export const minimalTemplate = `
+version: 1
 
 rules:
   - id: readme
