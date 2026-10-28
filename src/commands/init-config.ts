@@ -1,20 +1,17 @@
 import { safeRun } from '../utils/safe-run.js'
-import { minimalTemplate } from '../templates/minimal.js'
 import { init } from '../core/init.js'
 import { ExitCodes } from '../utils/exit-codes.js'
 
-export interface InitProjectOptions {
+export interface InitConfigOptions {
   projectDir: string
   configFileName?: string
 }
 
-const DEFAULT_CONFIG = minimalTemplate
-
 /**
  * Creates a starter Shapit configuration without overwriting existing files.
  */
-export const initProject = safeRun(
-  async ({ projectDir, configFileName = 'shapit.yml' }: InitProjectOptions) => {
+export const initConfig = safeRun(
+  async ({ projectDir, configFileName = 'shapit.yml' }: InitConfigOptions) => {
     const data = await init(projectDir, configFileName)
 
     return {
