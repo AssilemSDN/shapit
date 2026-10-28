@@ -1,5 +1,13 @@
 import { z } from 'zod'
 
+const aliasSchema = z
+  .string()
+  .regex(/^[a-zA-Z_]\w*$/, 'Invalid source alias')
+  .refine(
+    (value) => !['__proto__', 'prototype', 'constructor'].includes(value),
+    'Reserved source alias',
+  )
+
 /**
  * The schema for the JSON source configuration.
  */
@@ -10,7 +18,7 @@ export const jsonSourceSchema = z.strictObject({
     .string()
     .min(1)
     .describe('A JSONPath expression to select the data from the JSON file.'),
-  as: z.string().min(1).optional().describe('An optional alias for the selected data.'),
+  as: aliasSchema.optional().describe('An optional alias for the selected data.'),
 })
 
 export type JsonSource = z.infer<typeof jsonSourceSchema>
