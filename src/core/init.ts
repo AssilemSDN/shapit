@@ -6,11 +6,6 @@ import { ErrorCodes } from '../errors/error-codes.js'
 import { minimalTemplate } from '../templates/minimal.js'
 import { confirmCreateConfig } from '../prompts/init-prompts.js'
 
-export interface InitProjectOptions {
-  projectDir: string
-  configFileName?: string
-}
-
 export type InitResult =
   | { status: 'created'; configPath: string }
   | { status: 'cancelled'; configPath: string }
