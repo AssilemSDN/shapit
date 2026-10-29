@@ -13,7 +13,7 @@ export function registerCommands(program: Command): void {
   program
     .command('init')
     .description('Create a starter shapit.yml configuration')
-    .argument('[project-dir]', 'Project directory to audit', '.')
+    .argument('[project-dir]', 'Project directory to initialize', '.')
     .option('-c, --config <file>', 'Configuration file to create', 'shapit.yml')
     .action(async (projectDir: string, options: { config: string }) => {
       await runCommand({
