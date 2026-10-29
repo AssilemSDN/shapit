@@ -31,7 +31,15 @@ Define your project conventions in YAML, run an audit, and get clear feedback on
 
 ## Quick start
 
-Create a `shapit.yml` file in your project root:
+Initialize Shapit in your project:
+
+```bash
+npx @bloup/shapit init
+```
+
+This creates a `shapit.yml` configuration file with a minimal template.
+
+You can then customize your project rules:
 
 ```yaml
 version: 1
@@ -54,17 +62,13 @@ Or install it locally:
 
 ```bash
 npm install -D @bloup/shapit
-```
-
-Then run:
-
-```bash
 npx shapit audit
 ```
 
 ## Features
 
 - **Declarative configuration** - Define project standards in YAML.
+- **Configuration initialization** - Generate a starter configuration with `shapit init`.
 - **Structure validation** - Check required and forbidden files, directories, and path alternatives.
 - **Dynamic rules** - Generate rule instances from external data sources.
 - **CLI & API** - Run audits from the terminal or programmatically.
@@ -74,7 +78,7 @@ npx shapit audit
 
 Use external data sources to generate multiple instances of a rule.
 
-For example, check the files declared in `package.json`:
+For example, the following rule checks files declared in `package.json`:
 
 ```yaml
 - id: package-files
@@ -103,6 +107,15 @@ shapit <command> [options]
 With Shapit installed locally:
 
 ```bash
+# Generate a starter configuration
+npx shapit init
+
+# Generate in another project directory
+npx shapit init ../my-project
+
+# Use a custom configuration filename
+npx shapit init --config custom-shapit.yml
+
 # Audit the current directory
 npx shapit audit
 
