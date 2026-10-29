@@ -16,6 +16,7 @@ export type RunCommandOptions<TOptions, TData = unknown> = {
   commandFn: CommandFunction<TOptions, TData>
   options: TOptions
   renderData?: (data: TData) => void
+  showCompletionMessage?: boolean
 }
 
 /**
@@ -28,6 +29,7 @@ export async function runCommand<TOptions, TData = unknown>({
   commandFn,
   options,
   renderData,
+  showCompletionMessage,
 }: RunCommandOptions<TOptions, TData>): Promise<void> {
   logger.debug(`Starting ${commandName}...`)
   try {
@@ -36,6 +38,7 @@ export async function runCommand<TOptions, TData = unknown>({
       commandName,
       result,
       renderData,
+      showCompletionMessage,
     })
     process.exitCode = result.exitCode
   } catch (error: unknown) {

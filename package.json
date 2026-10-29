@@ -50,6 +50,7 @@
     "test:coverage": "yarn build && vitest run --coverage.enabled --coverage.reportsDirectory=coverage"
   },
   "dependencies": {
+    "@inquirer/prompts": "8.7.5",
     "brace-expansion": "5.0.12",
     "chalk": "6.0.1",
     "commander": "15.0.0",

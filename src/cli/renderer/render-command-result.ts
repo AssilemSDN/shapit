@@ -6,6 +6,7 @@ interface RenderCommandResultOptions<TData> {
   commandName: string
   result: CommandResult<TData>
   renderData?: (data: TData) => void
+  showCompletionMessage?: boolean
 }
 
 /**
@@ -17,6 +18,7 @@ export function renderCommandResult<TData>({
   commandName,
   result,
   renderData,
+  showCompletionMessage = true,
 }: RenderCommandResultOptions<TData>): void {
   for (const warning of result.warnings) {
     logger.warn(warning)
@@ -49,5 +51,7 @@ export function renderCommandResult<TData>({
     return
   }
 
-  logger.success(`${commandName} completed successfully.`)
+  if (showCompletionMessage) {
+    logger.success(`${commandName} completed successfully.`)
+  }
 }
