@@ -10,11 +10,10 @@ build:
 init:
 	docker run --rm \
 		-v "$(abspath $(ROOT)/docs/images):/app/docs/images" \
-		$(IMAGE) docs/demos/init.tape
+		$(IMAGE) /app/docs/demos/init.tape
 
 audit:
 	docker run --rm \
-		-w /app \
 		-v "$(abspath $(ROOT)/docs/images):/app/docs/images" \
 		$(IMAGE) /app/docs/demos/audit.tape
 
