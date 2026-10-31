@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+coverage/
+
+# Git
+.git/
+.github/
+
+# Development
+.vscode/
+.idea/
+*.log
+.env
+.env.*
+
+# Generated demos
+docs/images/*.gif
+
+# OS files
+.DS_Store
+Thumbs.db

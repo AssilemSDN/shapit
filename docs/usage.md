@@ -1,13 +1,13 @@
 # Usage
 
-Learn how to initialize projects, run audits, and integrate Shapit into CI pipelines.
+Learn how to initialize shapit configuration, run audits, and integrate Shapit into CI pipelines.
 
 - [Configuration](./configuration.md) — Configuration format and dynamic rules
 - [Rules](./rules/structure.md) — Available rule types
 - [Sources](./sources/json.md) — Data sources for dynamic rules
 - [Programmatic API](./api.md)
 
-## Initialize a project
+## Initialize a shapit starter configuration
 
 ```bash
 shapit init [project-dir] [options]

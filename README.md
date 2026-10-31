@@ -29,6 +29,8 @@ Define your project conventions in YAML, run an audit, and get clear feedback on
 > [!WARNING]
 > Shapit is under active development. Its configuration format and public API may change before v1.0.0.
 
+![Shapit audit demo](https://raw.githubusercontent.com/AssilemSDN/shapit/refs/heads/main/docs/images/demo-audit.gif)
+
 ## Quick start
 
 Initialize Shapit in your project:
