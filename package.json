@@ -1,6 +1,6 @@
 {
   "name": "@bloup/shapit",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Declarative CLI and API to audit the expected shape of a project",
   "keywords": [
     "audit",
