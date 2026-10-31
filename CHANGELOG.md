@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0](https://github.com/AssilemSDN/shapit/compare/v0.1.1...v0.2.0) (2026-10-31)
+
+
+### Features
+
+* **audit:** support dynamic rule definition ([#24](https://github.com/AssilemSDN/shapit/issues/24)) ([f0969ee](https://github.com/AssilemSDN/shapit/commit/f0969eec7332bb3e2f68b75bda99d9c16a3240db))
+* **cli:** add project initialization command ([#29](https://github.com/AssilemSDN/shapit/issues/29)) ([cc3aca4](https://github.com/AssilemSDN/shapit/commit/cc3aca49de56a6f7795483adbdd8176c1f0012cf))
+
 ## [0.1.1](https://github.com/AssilemSDN/shapit/compare/v0.1.0...v0.1.1) (2026-10-26)
 
 
