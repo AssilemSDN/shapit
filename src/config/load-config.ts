@@ -27,7 +27,11 @@ export const loadConfig = async (path: string): Promise<LoadedConfig> => {
         details: { path },
       })
     }
-    throw err
+    throw new AppError(`Unable to read configuration file "${path}"`, {
+      code: ErrorCodes.CONFIG_READ_ERROR,
+      details: { path },
+      cause: err,
+    })
   }
 
   let rawConfig: unknown

@@ -16,6 +16,19 @@ interface AuditScenario {
 
 export const auditScenarios = [
   {
+    name: 'rejects a rule type inherited from Object.prototype',
+    config: `
+     version: 1
+     rules:
+        - id: proto
+          type: constructor
+     `,
+    expected: {
+      exitCode: 2,
+      errorCode: 'UNKNOWN_RULE_TYPE',
+    },
+  },
+  {
     name: 'passes a compliant project',
     files: ['README.md', 'package.json'],
     config: `
