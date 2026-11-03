@@ -22,13 +22,14 @@ program
   .version(packageJson.version)
 
 registerGlobalOptions(program)
+
+program.exitOverride()
+
 registerCommands(program)
 
 program.hook('preAction', () => {
   applyGlobalOptions(program)
 })
-
-program.exitOverride()
 
 try {
   await program.parseAsync()
