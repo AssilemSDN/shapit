@@ -42,6 +42,7 @@ export function renderCommandResult<TData>({
         }
         if (error.cause !== undefined) {
           logger.debug(`Caused by: ${error.cause}`)
+          logger.error(` - ${error.cause}`)
         }
         logger.debug('Error code:', error.code)
       }

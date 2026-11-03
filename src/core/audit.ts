@@ -84,7 +84,9 @@ export const audit = async (
 
   // Iterate over each rule definition in the configuration
   for (const definition of config.rules) {
-    const executor = ruleRegistry[definition.type]
+    const executor = Object.hasOwn(ruleRegistry, definition.type)
+      ? ruleRegistry[definition.type]
+      : undefined
 
     if (!executor) {
       throw new AppError(`Unknown rule type "${definition.type}"`, {
