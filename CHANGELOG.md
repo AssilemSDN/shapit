@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1](https://github.com/AssilemSDN/shapit/compare/v0.2.0...v0.2.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* **cli:** return exit code 2 for command usage errors ([#32](https://github.com/AssilemSDN/shapit/issues/32)) ([543058d](https://github.com/AssilemSDN/shapit/commit/543058de555a8a6562238941c4bbd2dc20ae9ed4))
+* improve error handling and CLI robustness ([#34](https://github.com/AssilemSDN/shapit/issues/34)) ([0d7b7aa](https://github.com/AssilemSDN/shapit/commit/0d7b7aae52ddc6c8c18a4d2dfaa82b01a40d03f5))
+
 ## [0.2.0](https://github.com/AssilemSDN/shapit/compare/v0.1.1...v0.2.0) (2026-10-31)
 
 
