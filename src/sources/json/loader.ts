@@ -18,6 +18,9 @@ export const jsonSourceLoader: SourceLoader<JsonSource> = {
       const filePath = await resolveRealPathInside(baseDir, config.file)
       content = await readFile(filePath, 'utf-8')
     } catch (error) {
+      if (error instanceof AppError && error.code === ErrorCodes.PATH_OUTSIDE_BASE_DIRECTORY) {
+        throw error
+      }
       if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
         throw new AppError(`Source file not found: "${config.file}"`, {
           code: ErrorCodes.SOURCE_RESOLUTION_ERROR,
