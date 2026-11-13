@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { query } from 'jsonpathly'
-import { resolvePathInside } from '../../utils/resolve-project-path.js'
+import { resolvePathInside, resolveRealPathInside } from '../../utils/resolve-project-path.js'
 import type { SourceLoader } from '../types.js'
 import type { JsonSource } from './schema.js'
 import { AppError } from '../../errors/app-error.js'
@@ -13,10 +13,9 @@ export const jsonSourceLoader: SourceLoader<JsonSource> = {
   key: (config, baseDir) => `json:${resolvePathInside(baseDir, config.file)}`,
 
   async read(config, baseDir) {
-    const filePath = resolvePathInside(baseDir, config.file)
     let content: string
-
     try {
+      const filePath = await resolveRealPathInside(baseDir, config.file)
       content = await readFile(filePath, 'utf-8')
     } catch (error) {
       if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
