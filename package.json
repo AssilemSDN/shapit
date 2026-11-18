@@ -50,8 +50,8 @@
     "test:coverage": "yarn build && vitest run --coverage.enabled --coverage.reportsDirectory=coverage"
   },
   "dependencies": {
-    "@inquirer/prompts": "8.7.5",
-    "brace-expansion": "5.0.12",
+    "@inquirer/prompts": "8.8.0",
+    "brace-expansion": "5.0.13",
     "chalk": "6.0.1",
     "commander": "15.1.0",
     "jsonpathly": "4.0.0",
@@ -66,7 +66,7 @@
     "oxlint": "1.93.0",
     "tsx": "4.23.15",
     "typescript": "7.0.2",
-    "vite": "8.3.7",
+    "vite": "8.3.8",
     "vitest": "5.1.0"
   },
   "engines": {
