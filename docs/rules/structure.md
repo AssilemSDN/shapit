@@ -4,11 +4,11 @@ The `structure` rule checks whether files and directories exist within a project
 
 ## Parameters
 
-| Parameter | Required | Default | Description                                   |
-| --------- | -------- | ------- | --------------------------------------------- |
-| `path`    | Yes      | —       | Path to check. Supports brace alternatives.   |
-| `kind`    | No       | `any`   | Expected type: `file`, `directory`, or `any`. |
-| `must`    | No       | `exist` | Either `exist` or `not_exist`.                |
+| Parameter | Required | Default | Description                                             |
+| --------- | -------- | ------- | ------------------------------------------------------- |
+| `path`    | Yes      | —       | Path to check. Supports brace alternatives.             |
+| `kind`    | No       | `any`   | Expected type: `file`, `directory`, `symlink` or `any`. |
+| `must`    | No       | `exist` | Either `exist` or `not_exist`.                          |
 
 Unknown parameters are rejected. `kind` is ignored when `must` is `not_exist`.
 
@@ -77,7 +77,9 @@ Paths are resolved relative to the audited project root, regardless of the confi
 
 - Relative and absolute paths are allowed within the project.
 - Paths resolving outside the project are rejected.
-- Symbolic links may point outside the project; path validation is not a complete filesystem security boundary.
+- Symbolic links are inspected without following their final target.
+- A symbolic link is always classified as `symlink`, even if its target is broken or points outside the project.
+- Symbolic links in parent directories cannot be used to escape the project root.
 
 ## Result messages
 

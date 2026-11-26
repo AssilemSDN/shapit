@@ -7,13 +7,13 @@ import type { StructureInput } from './types.js'
  *
  * This schema ensures that the input adheres to the expected structure, including:
  * - `path`: A non-empty string representing the file or directory path.
- * - `kind`: An enumeration indicating the type of path, which can be 'file', 'directory', or 'any'. Defaults to 'any'.
+ * - `kind`: An enumeration indicating the type of path, which can be 'file', 'directory', 'symlink', or 'any'. Defaults to 'any'.
  * - `must`: An enumeration specifying whether the path must 'exist' or 'not_exist'. Defaults to 'exist'.
  */
 export const structureInputSchema = z
   .object({
     path: z.string().min(1),
-    kind: z.enum(['file', 'directory', 'any']).default('any'),
+    kind: z.enum(['file', 'directory', 'symlink', 'any']).default('any'),
     must: z.enum(['exist', 'not_exist']).default('exist'),
   })
   .strict()

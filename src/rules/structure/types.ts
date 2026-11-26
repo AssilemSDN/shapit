@@ -1,4 +1,4 @@
-export type PathType = 'file' | 'directory' | 'any'
+export type PathType = 'file' | 'directory' | 'symlink' | 'any'
 
 export type PathRequirement = 'exist' | 'not_exist'
 

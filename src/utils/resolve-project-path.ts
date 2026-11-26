@@ -4,7 +4,7 @@ import path from 'node:path'
 import { AppError } from '../errors/app-error.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 
-const isInside = (base: string, target: string): boolean => {
+export const isInside = (base: string, target: string): boolean => {
   const relative = path.relative(base, target)
   return relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative)
 }
