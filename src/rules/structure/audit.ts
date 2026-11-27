@@ -46,7 +46,7 @@ export const auditStructure = (input: StructureObservedInput): RuleResult => {
   if (existing.length > 0) {
     return {
       valid: false,
-      message: `No matching ${kind} found for ${expectedPaths}.\n  Found: ${existing.map(({ path, actualType }) => `${path} (${actualType})`).join(', ')}`,
+      message: `No matching ${kind} found for ${expectedPaths}.\n  Found: ${existing.map(({ path, actualType }) => `${path} (${actualType ?? 'unknown'})`).join(', ')}`,
     }
   }
 

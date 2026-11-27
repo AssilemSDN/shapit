@@ -30,6 +30,23 @@ For objects, individual properties can be accessed using dot notation (e.g., `{{
 
 See [jsonpathly](https://www.npmjs.com/package/jsonpathly) for supported syntax.
 
+## Symbolic links
+
+JSON sources follow symbolic links to read their target files.
+
+The resolved path must remain inside the project root.
+
+| Symbolic link                          | Behavior                |
+| -------------------------------------- | ----------------------- |
+| Internal, pointing to a JSON file      | Allowed                 |
+| External, pointing outside the project | Rejected                |
+| Broken                                 | Source resolution error |
+| Cyclic                                 | Source resolution error |
+
+Symbolic links in parent directories are also resolved and checked to prevent access outside the project.
+
+Unlike the [structure rule](../rules/structure.md), which inspects filesystem entries without following the final symbolic link, JSON sources resolve symbolic links to read their contents.
+
 ## Examples
 
 ### Check published files
@@ -85,7 +102,7 @@ See [jsonpathly](https://www.npmjs.com/package/jsonpathly) for supported syntax.
 
 Source resolution errors stop the audit with exit code `2`:
 
-- `SOURCE_RESOLUTION_ERROR`: Missing, unreadable or invalid JSON file.
-- `PATH_OUTSIDE_BASE_DIRECTORY`: File path escapes the project root.
+- `SOURCE_RESOLUTION_ERROR`: Missing, unreadable or invalid JSON file, including broken or cyclic symbolic links.
+- `PATH_OUTSIDE_BASE_DIRECTORY`: File path escapes the project root, including through symbolic links.
 
 An empty selection fails the rule (`valid: false`) without interrupting the audit. The audit exits with code `1` if any rule fails.

@@ -1,5 +1,6 @@
 import type { Stats } from 'node:fs'
-import { stat } from 'node:fs/promises'
+import path from 'node:path'
+import { lstat, realpath } from 'node:fs/promises'
 import { expand } from 'brace-expansion'
 
 import type {
@@ -10,9 +11,17 @@ import type {
 import type { Enricher } from './types.js'
 import { AppError } from '../errors/app-error.js'
 import { ErrorCodes } from '../errors/error-codes.js'
-import { resolvePathInside } from '../utils/resolve-project-path.js'
+import { isInside, resolvePathInside } from '../utils/resolve-project-path.js'
 
+/**
+ * Determines the type of a file system entry based on its stats.
+ * @param stats The stats of the file system entry.
+ * @returns The type of the file system entry as a string ('file', 'directory', 'symlink', or 'other').
+ */
 const getPathType = (stats: Stats): PathObservation['actualType'] => {
+  if (stats.isSymbolicLink()) {
+    return 'symlink'
+  }
   if (stats.isFile()) {
     return 'file'
   }
@@ -26,45 +35,71 @@ const isNodeError = (error: unknown): error is NodeJS.ErrnoException => {
   return error instanceof Error && 'code' in error
 }
 
+const isMissingPathError = (error: unknown): boolean =>
+  isNodeError(error) && (error.code === 'ENOENT' || error.code === 'ENOTDIR')
+
 /**
  * Inspects a resolved file system path.
  *
- * @param path - The relative path to inspect.
+ * @param relativePath - The relative path to inspect.
  * @param cwd - The project's working directory.
+ * @param realBase - The canonical project root.
  * @returns The observed existence and type of the path.
- * @throws {AppError} If access to the path is denied.
+ * @throws {AppError} If access is denied or a parent path escapes the project.
  */
-const observePath = async (path: string, cwd: string): Promise<PathObservation> => {
-  const absolutePath = resolvePathInside(cwd, path)
+const observePath = async (
+  relativePath: string,
+  cwd: string,
+  realBase: string,
+): Promise<PathObservation> => {
+  const absolutePath = resolvePathInside(cwd, relativePath)
 
   try {
-    const stats = await stat(absolutePath)
+    // Ensure the parent directory stays inside the project
+    const realParent =
+      absolutePath === path.resolve(cwd) ? realBase : await realpath(path.dirname(absolutePath))
 
+    if (!isInside(realBase, realParent)) {
+      throw new AppError(`Path escapes allowed directory: "${relativePath}"`, {
+        code: ErrorCodes.PATH_OUTSIDE_BASE_DIRECTORY,
+        details: {
+          baseDir: realBase,
+          targetPath: relativePath,
+          resolvedPath: realParent,
+        },
+      })
+    }
+    // Observe the entry without following the final symlink
+    const entry = await lstat(absolutePath)
     return {
-      path,
+      path: relativePath,
       exists: true,
-      actualType: getPathType(stats),
+      actualType: getPathType(entry),
     }
   } catch (error) {
-    if (!isNodeError(error)) {
+    if (error instanceof AppError) {
       throw error
     }
-
-    if (error.code === 'ENOENT' || error.code === 'ENOTDIR') {
+    if (isMissingPathError(error)) {
       return {
-        path,
+        path: relativePath,
         exists: false,
       }
     }
-
-    if (error.code === 'EACCES' || error.code === 'EPERM') {
-      throw new AppError(`Permission denied: "${path}"`, {
+    if (isNodeError(error) && error.code === 'ELOOP') {
+      throw new AppError(`Symbolic link cycle: "${relativePath}"`, {
+        code: ErrorCodes.RULE_EXECUTION_ERROR,
+        details: { path: absolutePath },
+        cause: error,
+      })
+    }
+    if (isNodeError(error) && (error.code === 'EACCES' || error.code === 'EPERM')) {
+      throw new AppError(`Permission denied: "${relativePath}"`, {
         code: ErrorCodes.PERMISSION_DENIED,
         details: { path: absolutePath },
         cause: error,
       })
     }
-
     throw error
   }
 }
@@ -88,8 +123,11 @@ export const enrichStructureInput: Enricher<StructureInput, StructureObservedInp
   context,
 ) => {
   const paths = [...new Set(expand(input.path))]
+  const realBase = await realpath(context.cwd)
 
-  const observations = await Promise.all(paths.map((path) => observePath(path, context.cwd)))
+  const observations = await Promise.all(
+    paths.map((path) => observePath(path, context.cwd, realBase)),
+  )
 
   return {
     ...input,
