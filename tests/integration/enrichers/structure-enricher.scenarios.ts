@@ -324,6 +324,20 @@ export const structureEnricherSymlinkScenarios = [
       ],
     },
   },
+  {
+    name: 'observes a missing path through an unresolved external parent',
+    filesystem: {
+      symlinks: [{ path: 'escape', target: '.', targetRoot: 'outside' }],
+    },
+    input: {
+      path: 'escape/missing/file.txt',
+      kind: 'file',
+      must: 'exist',
+    },
+    expected: {
+      observations: [{ path: 'escape/missing/file.txt', exists: false }],
+    },
+  },
 ] satisfies StructureEnricherScenario[]
 
 export const structureEnricherErrorScenarios = [
