@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/AssilemSDN/shapit/compare/v0.2.1...v0.3.0) (2026-11-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* Structure rules no longer dereference final symbolic links. Symlinks no longer satisfy `kind: file` or `kind: directory`. Use `kind: symlink` to explicitly match symbolic links, or `kind: any` to check their existence.
+
+### Bug Fixes
+
+* prevent symlink path escapes ([#38](https://github.com/AssilemSDN/shapit/issues/38)) ([96fd565](https://github.com/AssilemSDN/shapit/commit/96fd5658dd53eabf75185ca894528491824e88a1))
+
 ## [0.2.1](https://github.com/AssilemSDN/shapit/compare/v0.2.0...v0.2.1) (2026-11-05)
 
 
