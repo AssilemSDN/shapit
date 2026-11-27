@@ -1,19 +1,35 @@
 import type { PathObservation, StructureInput } from '../../../src/rules/structure/types.js'
+import { ErrorCodes } from '../../../src/errors/error-codes.js'
 
-interface StructureEnricherScenario {
+export interface FilesystemFixture {
+  files?: string[]
+  directories?: string[]
+  symlinks?: {
+    path: string
+    target: string
+    targetRoot?: 'project' | 'outside' // default: 'project'
+  }[]
+}
+
+interface BaseScenario {
   name: string
-  filesystem?: {
-    files?: string[]
-    directories?: string[]
-  }
+  filesystem?: FilesystemFixture
   input: StructureInput
+}
+
+interface StructureEnricherScenario extends BaseScenario {
   expected: {
     observations: PathObservation[]
   }
 }
 
+interface StructureEnricherErrorScenario extends BaseScenario {
+  expectedError: {
+    code: (typeof ErrorCodes)[keyof typeof ErrorCodes]
+  }
+}
+
 export const structureEnricherScenarios = [
-  // OK cases
   {
     name: 'observes existing file',
     filesystem: {
@@ -215,7 +231,16 @@ export const structureEnricherScenarios = [
       ],
     },
   },
-
+  {
+    name: 'observes the project root itself',
+    input: { path: '.', kind: 'directory', must: 'exist' },
+    expected: { observations: [{ path: '.', exists: true, actualType: 'directory' }] },
+  },
+  {
+    name: 'observes missing path when parent does not exist',
+    input: { path: 'missing/child.txt', kind: 'file', must: 'exist' },
+    expected: { observations: [{ path: 'missing/child.txt', exists: false }] },
+  },
   // Requirement independence
   {
     name: 'observes forbidden path without evaluating requirement',
@@ -238,3 +263,94 @@ export const structureEnricherScenarios = [
     },
   },
 ] satisfies StructureEnricherScenario[]
+
+export const structureEnricherSymlinkScenarios = [
+  {
+    name: 'reports a symlink to a file as symlink (does not follow)',
+    filesystem: {
+      files: ['real.txt'],
+      symlinks: [{ path: 'link.txt', target: 'real.txt' }],
+    },
+    input: { path: 'link.txt', kind: 'file', must: 'exist' },
+    expected: { observations: [{ path: 'link.txt', exists: true, actualType: 'symlink' }] },
+  },
+  {
+    name: 'reports a symlink to a directory as symlink',
+    filesystem: {
+      directories: ['real-dir'],
+      symlinks: [{ path: 'link-dir', target: 'real-dir' }],
+    },
+    input: { path: 'link-dir', kind: 'directory', must: 'exist' },
+    expected: { observations: [{ path: 'link-dir', exists: true, actualType: 'symlink' }] },
+  },
+  {
+    name: 'reports a broken symlink as existing symlink',
+    filesystem: {
+      symlinks: [{ path: 'broken', target: 'does-not-exist' }],
+    },
+    input: { path: 'broken', kind: 'file', must: 'exist' },
+    expected: { observations: [{ path: 'broken', exists: true, actualType: 'symlink' }] },
+  },
+  {
+    name: 'reports a self-referencing symlink as symlink (final entry is not followed)',
+    filesystem: {
+      symlinks: [{ path: 'loop', target: 'loop' }],
+    },
+    input: { path: 'loop', kind: 'any', must: 'exist' },
+    expected: { observations: [{ path: 'loop', exists: true, actualType: 'symlink' }] },
+  },
+  {
+    name: 'follows a symlinked parent that stays inside the project',
+    filesystem: {
+      files: ['real/file.txt'],
+      symlinks: [{ path: 'alias', target: 'real' }],
+    },
+    input: { path: 'alias/file.txt', kind: 'file', must: 'exist' },
+    expected: {
+      observations: [{ path: 'alias/file.txt', exists: true, actualType: 'file' }],
+    },
+  },
+  {
+    name: 'observes brace alternatives mixing file and symlink',
+    filesystem: {
+      files: ['config.json'],
+      symlinks: [{ path: 'config.yaml', target: 'config.json' }],
+    },
+    input: { path: 'config.{json,yaml}', kind: 'file', must: 'exist' },
+    expected: {
+      observations: [
+        { path: 'config.json', exists: true, actualType: 'file' },
+        { path: 'config.yaml', exists: true, actualType: 'symlink' },
+      ],
+    },
+  },
+] satisfies StructureEnricherScenario[]
+
+export const structureEnricherErrorScenarios = [
+  {
+    name: 'rejects a path escaping via ..',
+    input: { path: '../outside.txt', kind: 'file', must: 'exist' },
+    expectedError: { code: ErrorCodes.PATH_OUTSIDE_BASE_DIRECTORY },
+  },
+  {
+    name: 'rejects a path whose parent is a symlink pointing outside the project',
+    filesystem: {
+      symlinks: [{ path: 'escape', target: '.', targetRoot: 'outside' }],
+    },
+    input: { path: 'escape/file.txt', kind: 'file', must: 'exist' },
+    expectedError: { code: ErrorCodes.PATH_OUTSIDE_BASE_DIRECTORY },
+  },
+  {
+    name: 'rejects a brace expansion when one alternative escapes',
+    input: { path: '{ok.txt,../outside.txt}', kind: 'file', must: 'exist' },
+    expectedError: { code: ErrorCodes.PATH_OUTSIDE_BASE_DIRECTORY },
+  },
+  {
+    name: 'rejects a symlink cycle traversed as a parent',
+    filesystem: {
+      symlinks: [{ path: 'loop', target: 'loop' }],
+    },
+    input: { path: 'loop/child', kind: 'file', must: 'exist' },
+    expectedError: { code: ErrorCodes.RULE_EXECUTION_ERROR },
+  },
+] satisfies StructureEnricherErrorScenario[]
